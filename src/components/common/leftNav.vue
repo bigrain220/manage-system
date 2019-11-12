@@ -1,6 +1,6 @@
 <template>
   <div id="lefnav">
-    <el-menu :default-active="onRoutes" class="el-menu-vertical-demo left-ul" background-color="#fff"  router text-color="#323437" active-text-color="#29e" :collapse="isCollapse">
+    <el-menu :default-active="onRoutes" class="el-menu-vertical-demo left-ul" background-color="#fff"  router text-color="#434444" active-text-color="#29e" :collapse="isCollapse">
       <div class="radioGroup" id="radioGroup"  @click="change"><span class="nav-text" v-show="!isCollapse">网站导航</span><i class="iconfont icondaohang"></i></div>
       <el-submenu index="Module">
         <template slot="title">
@@ -52,23 +52,23 @@ export default {
 				var timer = null ;
 				clearInterval(timer);
 				var _ele = document.getElementById('content');
-				var _eles = document.getElementById('header');
+				// var _eles = document.getElementById('header');
 				timer = setInterval(function(){
 					if(flag == true){
 						_ele.style.left = _ele.offsetLeft - 5 + 'px';
-						_eles.style.left = _eles.offsetLeft - 5 + 'px';
+						// _eles.style.left = _eles.offsetLeft - 5 + 'px';
 						if(_ele.offsetLeft <= (num+5) ){
 							_ele.style.left = '64px';
-							_eles.style.left = '64px';
+							// _eles.style.left = '64px';
 							clearInterval(timer);	
 							
 						}
 					}else{
 						_ele.style.left = _ele.offsetLeft + 5 + 'px';
-						_eles.style.left = _eles.offsetLeft + 5 + 'px';
+						// _eles.style.left = _eles.offsetLeft + 5 + 'px';
 						if(_ele.offsetLeft >= (num-5)){
 							_ele.style.left = '200px';
-							_eles.style.left = '200px';
+							// _eles.style.left = '200px';
 							clearInterval(timer);
 						}
 						
@@ -93,6 +93,7 @@ export default {
             }
 	 }
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -115,8 +116,13 @@ padding:0 20px;box-sizing: border-box;cursor: pointer;height: 50px;line-height: 
 .left-ul.el-menu--collapse{width: 64px;}
 .el-submenu .el-menu-item{min-width: 199px;}
 .el-submenu__title span,.space-item{margin-left: 2px;}
+.el-menu-item.is-active{background: #fff!important;}
 </style>
 <style>
 #lefnav .el-submenu__title,#leftnav .el-menu-item,.el-submenu .el-menu-item{height: 46px!important;line-height: 46px!important;}
 .el-submenu.is-active .el-submenu__title>*{color: rgb(34, 153, 238)!important;}
+ul.el-menu--popup{padding: 0!important;}
+#lefnav .el-menu-item:hover,.el-submenu__title:hover,ul.el-menu--popup li:hover{
+  background: #ecf5ff!important;
+}
 </style>

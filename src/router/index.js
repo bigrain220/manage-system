@@ -13,8 +13,8 @@ export default new Router({
     	children:[
         {
           path: '/index',
-          name: 'Index',
-          component:resolve => require(['@/components/Index'],resolve)
+          name: 'Material',
+          component:resolve => require(['@/components/Material'],resolve)
         },
         {
           path: '/unit',

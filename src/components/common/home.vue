@@ -3,9 +3,9 @@
     <!-- <Header></Header> -->
     <leftNav></leftNav>
     <div class="content" id="content">
-      <transition name="el-fade-in" mode="out-in" appear>
+      <!-- <transition name="el-fade-in" mode="out-in" appear> -->
         <router-view></router-view>
-      </transition>
+      <!-- </transition> -->
     </div>
 
   </div>
@@ -21,6 +21,6 @@ export default {
 </script>
 <style  scoped>
 /* overflow-y:scroll */
-#content{text-align:left;position:absolute;right:0;left:200px;top:60px;bottom:0;padding:0 20px;box-sizing:border-box;}
+#content{text-align:left;position:absolute;right:0;left:200px;top:0px;bottom:0;padding:0 20px;box-sizing:border-box;}
 
 </style>

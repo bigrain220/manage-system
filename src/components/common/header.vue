@@ -3,7 +3,7 @@
     <div class="content-header-wrapper">
       <div class="content-header">
         <div class="header-container clearfix">
-          <span class="header-text l">{{text}}</span>
+          <span class="header-text l">{{title}}</span>
         </div>
       </div>
     </div>
@@ -13,9 +13,12 @@
 <script>
 export default {
   name: "Header",
+  props: {
+            title:{type:String}
+        },
   data() {
     return {
-        text:""
+       
     };
   },
   methods: {},
@@ -34,7 +37,7 @@ export default {
   background: #fff;
   top: 0;
   right: 0;
-  left: 200px;
+  left: 0px;
   overflow: hidden;
   width: 100%;
 }

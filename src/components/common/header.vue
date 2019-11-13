@@ -48,7 +48,7 @@ export default {
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
     border-bottom: 1px solid #d2d3d4;
-    padding: 17px 0;
+    padding: 12px 0;
 }
 
 .header-container {

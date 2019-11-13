@@ -173,9 +173,9 @@ export default {
 			this.getEcharts();
 			window.addEventListener("scroll", this.scrollEvent);
 		},
-		destroyed() {
-			window.removeEventListener("scroll", this.scrollEvent);
-		}
+  destroyed() {
+        window.removeEventListener("scroll", this.scrollEvent);
+  }
 };
 </script>
 <style  scoped>
@@ -233,10 +233,10 @@ export default {
     color: #fff;
 }
 .control-bar-wrapper .el-date-editor.el-input__inner{
-  height: 30px;line-height: 30px;margin-left: 28px;
+  height: 32px;line-height: 32px;margin-left: 28px;
 }
 .control-bar-wrapper .el-range-editor.el-input__inner{padding:0 14px;}
 </style>
 <style>
-.control-bar-wrapper .el-date-editor .el-range-separator{line-height: 28px}
+.control-bar-wrapper .el-date-editor .el-range-separator{line-height: 32px}
 </style>

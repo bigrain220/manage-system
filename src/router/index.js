@@ -8,28 +8,41 @@ export default new Router({
   routes: [
     {
       path:'/',
-      redirect: '/index',
+      redirect: '/user/index'
+    },
+    {
+      path:'/user',
       component: resolve => require(['@/components/common/home'], resolve),
     	children:[
         {
-          path: '/index',
+          path: 'index',
           name: 'Material',
-          component:resolve => require(['@/components/Material'],resolve)
+          component:resolve => require(['@/components/advDirected/material'],resolve)
         },
         {
-          path: '/unit',
-          component: resolve => require(['@/components/Unit'], resolve),
+          path: 'unit',
+          component: resolve => require(['@/components/advDirected/unit'], resolve),
           name: 'Unit',
         },
         {
-          path: '/directed',
-          component: resolve => require(['@/components/Directed'], resolve),
+          path: 'directed',
+          component: resolve => require(['@/components/dataManage/directed'], resolve),
           name: 'Directed',
         },
         {
-          path: '/help',
-          component: resolve => require(['@/components/Help'], resolve),
+          path: 'help',
+          component: resolve => require(['@/components/advDirected/help'], resolve),
           name: 'Help',
+        },
+        {
+          path: 'history',
+          component: resolve => require(['@/components/Trend/history'], resolve),
+          name: 'History',
+        },
+        {
+          path: 'update',
+          component: resolve => require(['@/components/Trend/update'], resolve),
+          name: 'Update',
         },
       ]
     },

@@ -7,20 +7,28 @@
           <i class="iconfont iconguanggaotoufang"></i>
           <span>广告投放</span>
         </template>
-        <el-menu-item index="/index"><span class="space-item">物料管理</span></el-menu-item>
-        <el-menu-item index="/unit"><span class="space-item">单元管理</span></el-menu-item>
+        <el-menu-item index="/user/index"><span class="space-item">物料管理</span></el-menu-item>
+        <el-menu-item index="/user/unit"><span class="space-item">单元管理</span></el-menu-item>
       </el-submenu>
       <el-submenu index="/">
         <template slot="title">
           <i class="iconfont iconshujuguanli"></i>
           <span>数据管理</span>
         </template>
-        <el-menu-item index="/directed"><i class="icon-danye iconfont"></i><span slot="title">投放报表</span></el-menu-item>
+        <el-menu-item index="/user/directed"><i class="icon-danye iconfont"></i><span slot="title">投放报表</span></el-menu-item>
       </el-submenu>
       <el-submenu index="11">
+        <template slot="title">
+          <i class="iconfont iconshujuguanli"></i>
+          <span>应用趋势</span>
+        </template>
+        <el-menu-item index="/user/update"><i class="icon-danye iconfont"></i><span slot="title">实时数据</span></el-menu-item>
+        <el-menu-item index="/user/history"><i class="icon-danye iconfont"></i><span slot="title">历史趋势</span></el-menu-item>
+      </el-submenu>
+      <el-submenu index="22">
         <template slot="title" id="titles"><i class="iconfont iconbangzhushouce"></i><span slot="title">帮助手册</span>
         </template>
-        <el-menu-item index="/help"><span class="space-item">视频观看</span></el-menu-item>
+        <el-menu-item index="/user/help"><span class="space-item">视频观看</span></el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

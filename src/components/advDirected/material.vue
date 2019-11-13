@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import { sessionAPI } from "../api/api";
-import utils from "../utils/utils";
-import Header from "./common/header";
+import { sessionAPI } from "../../api/api";
+import utils from "../../utils/utils";
+import Header from "../common/header";
 export default {
   name: "Material",
   components: { Header },

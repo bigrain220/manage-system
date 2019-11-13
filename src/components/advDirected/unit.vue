@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import Header from "./common/header";
+import Header from "../common/header";
 export default {
-  name: "Unit",
+  name: "unit",
   components: { Header },
   data() {
     return {

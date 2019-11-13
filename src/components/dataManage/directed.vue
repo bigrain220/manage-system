@@ -13,13 +13,13 @@
   </div>
 </template>
 <script>
-import Header from "./common/header";
+import Header from "../common/header";
 export default {
   name: "Directed",
   components: { Header },
   data(){
       return{
-        title:"投放报表"
+        title:"投放效果报表（只展示一个月内的数据，今天前的数据）"
       }
   },
   methods: {

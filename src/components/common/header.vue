@@ -1,13 +1,12 @@
 <template>
-  <div id="header">
-    <div class="content-header-wrapper">
-      <div class="content-header">
+    <div class="content-header-wrapper" ref="fixBox">
+      <div :class="{ 'content-header': true, 'head-fixed': isFixed }">
         <div class="header-container clearfix">
           <span class="header-text l">{{title}}</span>
         </div>
+        <slot></slot>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -18,42 +17,59 @@ export default {
         },
   data() {
     return {
-       
+       isFixed:false,
+       height:""
     };
   },
-  methods: {},
+  methods: {
+    getFixed(){
+      if(this.isFixed===false){
+          this.isFixed=true;
+          this.$refs.fixBox.style.height = this.height+"px";
+      }
+    },
+    getHeight(){
+       this.height = this.$refs.fixBox.offsetHeight;
+    }
+   
+  },
+  mounted(){
+    this.getHeight();
+  }
 
 
 };
 </script>
 
 <style lang="scss" scoped>
-#header {
-  position: absolute;
-  box-sizing: border-box;
-  height: 50px;
-  line-height: 50px;
-  color: #333;
-  background: #fff;
-  top: 0;
-  right: 0;
-  left: 0px;
-  overflow: hidden;
-  width: 100%;
-}
-#header .content-header{
+.content-header {
     width: 100%;
     position: relative;
+    background-color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
     border-bottom: 1px solid #d2d3d4;
-    padding: 12px 0;
-    height: 50px;
-    box-sizing: border-box;
+    padding: 17px 0;
 }
-.header-container .header-text{
+
+.header-container {
+    line-height: 16px;
+}
+
+.header-container .header-text {
     font-weight: 700;
     font-size: 14px;
-    line-height: 25px;
+    line-height: 16px;
     margin-left: 20px;
+}
+
+.header-container .header-data {
+    margin-left: 3px;
+    font-size: 14px;
+}
+
+.head-fixed.content-header{
+   position: fixed;
+   top: 0;
+   z-index: 999;
 }
 </style>

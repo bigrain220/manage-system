@@ -1,7 +1,7 @@
 <template>
   <div id="lefnav">
     <el-menu :default-active="onRoutes" class="el-menu-vertical-demo left-ul" background-color="#fff"  router text-color="#434444" active-text-color="#29e" :collapse="isCollapse">
-      <div class="radioGroup" id="radioGroup"  @click="change"><span class="nav-text" v-show="!isCollapse">网站导航</span><i class="iconfont icondaohang"></i></div>
+      <div class="radioGroup" id="radioGroup"  @click="change"><span class="nav-text" v-show="!isCollapse">网站导航</span><i :class="[isCollapse==true?'l':'r' , 'iconfont','icondaohang']"></i></div>
       <el-submenu index="Module">
         <template slot="title">
           <i class="iconfont iconguanggaotoufang"></i>
@@ -63,19 +63,19 @@ export default {
 				// var _eles = document.getElementById('header');
 				timer = setInterval(function(){
 					if(flag == true){
-						_ele.style.left = _ele.offsetLeft - 5 + 'px';
+						_ele.style.marginLeft = _ele.offsetLeft - 5 + 'px';
 						// _eles.style.left = _eles.offsetLeft - 5 + 'px';
 						if(_ele.offsetLeft <= (num+5) ){
-							_ele.style.left = '64px';
+							_ele.style.marginLeft = '64px';
 							// _eles.style.left = '64px';
 							clearInterval(timer);	
 							
 						}
 					}else{
-						_ele.style.left = _ele.offsetLeft + 5 + 'px';
+						_ele.style.marginLeft = _ele.offsetLeft + 5 + 'px';
 						// _eles.style.left = _eles.offsetLeft + 5 + 'px';
 						if(_ele.offsetLeft >= (num-5)){
-							_ele.style.left = '200px';
+							_ele.style.marginLeft = '200px';
 							// _eles.style.left = '200px';
 							clearInterval(timer);
 						}
@@ -107,7 +107,7 @@ export default {
 <style lang="scss" scoped>
 #lefnav {
   display: block;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0px;
   bottom: 0;
@@ -117,9 +117,9 @@ export default {
   font-size: 12px;
 }
 .radioGroup { background: #f2f3f4;color: #323437;text-align: center;width: 100%;border: none;border-radius: 0;border-bottom: 1px solid #e1e3e4;overflow: hidden;
-padding:0 20px;box-sizing: border-box;cursor: pointer;height: 50px;line-height: 50px;}
-.nav-text{float: left;margin-left: 22px;font-size: 14px;}
-.radioGroup i{font-size: 16px;float: right;}
+padding:0 20px;box-sizing: border-box;cursor: pointer;height: 40px;line-height: 40px;}
+.nav-text{float: left;margin-left: 22px;font-size: 12px;}
+.radioGroup i{font-size: 14px;}
 .left-ul{border-right: 1px solid #e6e6e6!important;box-sizing: border-box; height: 100%;width: 200px;}
 .left-ul.el-menu--collapse{width: 64px;}
 .el-submenu .el-menu-item{min-width: 199px;}
@@ -127,7 +127,7 @@ padding:0 20px;box-sizing: border-box;cursor: pointer;height: 50px;line-height: 
 .el-menu-item.is-active{background: #fff!important;}
 </style>
 <style>
-#lefnav .el-submenu__title,#leftnav .el-menu-item,.el-submenu .el-menu-item{height: 46px!important;line-height: 46px!important;}
+#lefnav .el-submenu__title,#leftnav .el-menu-item,.el-submenu .el-menu-item{height: 40px!important;line-height: 40px!important;font-size: 12px;}
 .el-submenu.is-active .el-submenu__title>*{color: rgb(34, 153, 238)!important;}
 ul.el-menu--popup{padding: 0!important;}
 #lefnav .el-menu-item:hover,.el-submenu__title:hover,ul.el-menu--popup li:hover{

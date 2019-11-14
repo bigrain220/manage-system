@@ -23,6 +23,9 @@ export default {
       this.$nextTick(function() {
          this.isRouterAlive = true
       })
+    },
+    scrollEvent(){
+      this.$center.$emit('isFixed',true)
     }
   },
   created(){
@@ -35,6 +38,12 @@ export default {
         sessionStorage.setItem("store",JSON.stringify(this.$store.state))
     })
   },
+  mounted(){
+    window.addEventListener("scroll", this.scrollEvent);
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.scrollEvent);
+  }
  
 }
 </script>

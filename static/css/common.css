@@ -25,10 +25,14 @@ table{border-collapse: collapse; border-spacing: 0;}
 article, aside, details, figcaption, figure, footer,header, hgroup, menu, nav, section,
 summary, time, mark, audio, video{display: block;margin: 0;padding: 0;}
 /** 其他 **/
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background-color:#eee}
+::-webkit-scrollbar-thumb{border-radius:6px;background-color:#ccc}
 .clearfix::after,.clearfix::before{content:".";line-height:0;height:0;display:block;visibility:hidden;clear:both;}
 html,body{font-size: 14px;}
 body{
     background: #f8f8f8;
+    min-width: 768px;
 }
 .l{float: left;}
 .r{float: right;}
@@ -38,4 +42,6 @@ body{
     text-overflow: ellipsis; 
 }
 
+*{box-sizing: border-box;}
 .content-box{padding:0 20px;position: relative;margin-top: 20px;}
+

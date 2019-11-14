@@ -7,13 +7,13 @@
                         <div class="control-bar l">
                             <span class="l time">时间：</span>
                             <div class="l date-select-bar clearfix" id="date-select-bar">
-                                <span data-date='0' class="trackable cur">今天</span>
+                                <span :class="['trackable',dateCur===0?'cur':'']" @click="choseDate(0)">今天</span>
                                 <span class="seprator"></span>
-                                <span data-date='-1' class="trackable">昨天</span>
+                                <span :class="['trackable',dateCur===-1?'cur':'']"  @click="choseDate(-1)">昨天</span>
                                 <span class="seprator"></span>
-                                <span data-date='-6' class="trackable">最近7天</span>
+                                <span :class="['trackable',dateCur===-6?'cur':'']"  @click="choseDate(-6)">最近7天</span>
                                 <span class="seprator"></span>
-                                <span data-date='-29' class="trackable">最近30天</span>
+                                <span :class="['trackable',dateCur===-29?'cur':'']"  @click="choseDate(-29)">最近30天</span>
                             </div>
                         </div>
                         <el-date-picker
@@ -47,6 +47,7 @@ export default {
   data() {
     return {
       title: "历史趋势",
+      dateCur:-6,
       value1:""
     };
   },
@@ -156,25 +157,16 @@ export default {
 
       myChart.setOption(option);
     },
-    scrollEvent(){
-        this.$refs.Header.getFixed()
-				// let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop // 滚动条偏移量;
-				// if (scrollTop >0) {
-          
-				// } else {
-					
-				// }
+    choseDate(date){
+      this.dateCur =date;
+      console.log(date)
     },
     dateChange(val){
       console.log(val)
     }
   },
   mounted(){
-			this.getEcharts();
-			window.addEventListener("scroll", this.scrollEvent);
-		},
-  destroyed() {
-        window.removeEventListener("scroll", this.scrollEvent);
+      this.getEcharts();
   }
 };
 </script>
@@ -228,7 +220,7 @@ export default {
     bottom: -1px;
     margin-top: -2px;
     padding-top: 1px;
-    height: 30px;
+    height: 31px;
     background-color: #4da7fd;
     color: #fff;
 }
@@ -238,5 +230,5 @@ export default {
 .control-bar-wrapper .el-range-editor.el-input__inner{padding:0 14px;}
 </style>
 <style>
-.control-bar-wrapper .el-date-editor .el-range-separator{line-height: 32px}
+.control-bar-wrapper .el-date-editor .el-range-separator{line-height: 32px;width: 6%;}
 </style>

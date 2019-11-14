@@ -9,6 +9,8 @@
         </template>
         <el-menu-item index="/user/index"><span class="space-item">物料管理</span></el-menu-item>
         <el-menu-item index="/user/unit"><span class="space-item">单元管理</span></el-menu-item>
+        <el-menu-item index="/user/keywords"><span class="space-item">设置关键字</span></el-menu-item>
+        <el-menu-item index="/user/help"><span class="space-item">视频观看</span></el-menu-item>
       </el-submenu>
       <el-submenu index="/">
         <template slot="title">
@@ -26,9 +28,9 @@
         <el-menu-item index="/user/history"><i class="icon-danye iconfont"></i><span slot="title">历史趋势</span></el-menu-item>
       </el-submenu>
       <el-submenu index="22">
-        <template slot="title" id="titles"><i class="iconfont iconbangzhushouce"></i><span slot="title">帮助手册</span>
+        <template slot="title" id="titles"><i class="iconfont iconbangzhushouce"></i><span slot="title">云盟分析</span>
         </template>
-        <el-menu-item index="/user/help"><span class="space-item">视频观看</span></el-menu-item>
+        <el-menu-item index="/user/historyDetail"><span class="space-item">历史详情</span></el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

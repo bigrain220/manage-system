@@ -22,5 +22,6 @@ export default {
     },
     clearCookie(cname) {  
         this.setCookie(cname, "", -1);  
-    }  
+    },
+
 }

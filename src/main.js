@@ -11,6 +11,7 @@ import { Message } from 'element-ui';
 import 'babel-polyfill'
 import store from './vuex/index'
 
+
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(vueiInfinite)

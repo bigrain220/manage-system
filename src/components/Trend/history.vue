@@ -9,16 +9,16 @@
                             <div class="l date-select-bar clearfix" id="date-select-bar">
                                 <span :class="['trackable',dateCur===0?'cur':'']" @click="choseDate(0)">今天</span>
                                 <span class="seprator"></span>
-                                <span :class="['trackable',dateCur===-1?'cur':'']"  @click="choseDate(-1)">昨天</span>
-                                <span class="seprator"></span>
                                 <span :class="['trackable',dateCur===-6?'cur':'']"  @click="choseDate(-6)">最近7天</span>
+                                <span class="seprator"></span>
+                                <span :class="['trackable',dateCur===-13?'cur':'']"  @click="choseDate(-13)">最近14天</span>
                                 <span class="seprator"></span>
                                 <span :class="['trackable',dateCur===-29?'cur':'']"  @click="choseDate(-29)">最近30天</span>
                             </div>
                         </div>
                         <el-date-picker
                             @change="dateChange"
-                            v-model="value1"
+                            v-model="formDate"
                             type="daterange"
                             range-separator="至"
                             start-placeholder="开始日期"
@@ -41,6 +41,7 @@ require("echarts/lib/chart/line");
 require("echarts/lib/component/legend");
 
 import Header from "../common/header";
+import utils from "../../utils/utils"
 export default {
   name: "History",
   components: { Header },
@@ -48,7 +49,7 @@ export default {
     return {
       title: "历史趋势",
       dateCur:-6,
-      value1:""
+      formDate:[]
     };
   },
   methods: {
@@ -156,21 +157,49 @@ export default {
       };
 
       myChart.setOption(option);
+      window.onresize = function () {
+        myChart ? myChart.resize() : "";
+      }
     },
     choseDate(date){
       this.dateCur =date;
-      console.log(date)
+      switch (date) {
+          case 0:
+              this.formDate = ["2019-11-15", "2019-11-15"]
+              break;
+          case -6:
+            this.formDate = this.getDateRange(7)
+              break;
+          case -13:
+             this.formDate = this.getDateRange(14)
+              break;
+          case -29:
+              this.formDate = this.getDateRange(30)
+              break;
+          default:
+              break;
+      }
     },
     dateChange(val){
-      console.log(val)
+        this.formDate[0]=utils.getLocalTime(val[0].getTime()).slice(0,10);
+        this.formDate[1]=utils.getLocalTime(val[1].getTime()).slice(0,10);
+        console.log(this.formDate)
+    },
+    getDateRange(params){
+        const end = utils.getLocalTime(Date.now()-3600 * 1000 * 24).slice(0,10);
+        const start = utils.getLocalTime(Date.now()- 3600 * 1000 * 24 * params).slice(0,10);
+        let arr=[start,end];
+        return arr;
     }
   },
   mounted(){
       this.getEcharts();
+      this.choseDate(-6);
   }
 };
 </script>
-<style  scoped>
+<style lang="scss"  scoped>
+$text-color:#323437;// 日期选择文字颜色
 #historyChart{
   background: #fff;
 }
@@ -179,10 +208,10 @@ export default {
     padding-top: 20px;
     padding-bottom: 5px;
     z-index: 2;
-    color: #323437;
+    color: $text-color;
 }
 #filters .control-bar-wrapper .control-bar {
-    color: #323437;
+    color: $text-color;
 }
 #filters .control-bar-wrapper .control-bar .time {
     margin-left: 30px;
@@ -201,7 +230,7 @@ export default {
     height: 30px;
     line-height: 30px;
     padding: 0 10px;
-    color: #323437;
+    color: $text-color;
     background-color: #fff;
     cursor: pointer;
 }

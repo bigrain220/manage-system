@@ -3,15 +3,15 @@
     <Header :title="title"></Header>
     <div class="content-box">
       <div class="keywords-box">
-        <h4 class="title">关键词</h4>
+        <h4 class="title">关键词<span style="color:#999;"> (可不填满)</span></h4>
         <!-- <el-button type="primary" size="mini" class="add-btn" @click="addInput">添加词库</el-button> -->
         <div class="input-box">
           <el-input :maxlength="20" :popper-class="`cname${inputIndex} cname`" v-model="itemsData[inputIndex]" size="small" placeholder="" :class="`iname${inputIndex} iname`" v-for="(inputItem, inputIndex) in itemsData" :key="inputIndex">
           </el-input>
         </div>
-        <h4 class="title">描述</h4>
+        <h4 class="title">描述<span style="color:#999;"> (最多100字)</span></h4>
         <div class="input-box">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="descriptionVal" maxlength="100" show-word-limit @keydown.native="listen($event)">
+          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" placeholder="请输入内容" v-model="descriptionVal" maxlength="100" show-word-limit @keydown.native="listen($event)">
           </el-input>
         </div>
         <div class="btn-box">
@@ -119,5 +119,6 @@ export default {
 <style>
 .keywords-box .el-textarea__inner {
   max-height: 200px;
+  resize:none;
 }
 </style>

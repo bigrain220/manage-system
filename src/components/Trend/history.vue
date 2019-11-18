@@ -55,6 +55,7 @@ export default {
   methods: {
     getEcharts() {
       let myChart = $echarts.init(document.getElementById("historyChart"));
+       myChart ? myChart.clear() : "";
       // 绘制图表
       var option = {
           tooltip: {
@@ -165,10 +166,10 @@ export default {
       this.dateCur =date;
       switch (date) {
           case 0:
-              this.formDate = ["2019-11-15", "2019-11-15"]
+              this.formDate = this.getDateRange(0)
               break;
           case -6:
-            this.formDate = this.getDateRange(7)
+              this.formDate = this.getDateRange(7)
               break;
           case -13:
              this.formDate = this.getDateRange(14)
@@ -181,13 +182,18 @@ export default {
       }
     },
     dateChange(val){
-        this.formDate[0]=utils.getLocalTime(val[0].getTime()).slice(0,10);
-        this.formDate[1]=utils.getLocalTime(val[1].getTime()).slice(0,10);
-        console.log(this.formDate)
+        if(val){
+            this.formDate[0]=utils.getLocalTime(val[0].getTime()).slice(0,10);
+            this.formDate[1]=utils.getLocalTime(val[1].getTime()).slice(0,10);
+            console.log(this.formDate)
+        }
     },
     getDateRange(params){
-        const end = utils.getLocalTime(Date.now()-3600 * 1000 * 24).slice(0,10);
-        const start = utils.getLocalTime(Date.now()- 3600 * 1000 * 24 * params).slice(0,10);
+        let end = utils.getLocalTime(Date.now()-3600 * 1000 * 24).slice(0,10);
+        let start = utils.getLocalTime(Date.now()- 3600 * 1000 * 24 * params).slice(0,10);
+        if(params == 0){
+            end =start;
+        }
         let arr=[start,end];
         return arr;
     }
@@ -195,7 +201,10 @@ export default {
   mounted(){
       this.getEcharts();
       this.choseDate(-6);
-  }
+  },
+  beforeDestroy () {
+    this.chart.clear()
+  },
 };
 </script>
 <style lang="scss"  scoped>

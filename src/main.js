@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import vueiInfinite from 'vue-infinite-scroll'
 import util from './utils/utils.js'
 import { Message } from 'element-ui';
 import 'babel-polyfill'
@@ -14,7 +13,6 @@ import store from './vuex/index'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
-Vue.use(vueiInfinite)
 Vue.prototype.$center = new Vue() //非父子组件传值
 
 

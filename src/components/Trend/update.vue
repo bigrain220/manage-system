@@ -25,6 +25,7 @@ export default {
   methods: {
     getEcharts() {
       let myChart = $echarts.init(document.getElementById("updateChart"));
+      myChart ? myChart.clear() : "";
       // 绘制图表
       var option = {
           tooltip: {

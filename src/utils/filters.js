@@ -1,11 +1,18 @@
 import Vue from 'vue'
 
-Vue.filter('timeFilter', function (value) {
-  if (!value) return ''
-  value = value.toString()
-  var a = parseInt(value / 60);
-  var b = value % 60;
-  a > 9 ? a = a : a = '0' + a;
-  b > 9 ? b = b : b = '0' + b;
-  return a + ":" + b;
+Vue.filter('statusFilter', function (value) {
+      switch (value) {
+        case 0:
+          return "待投放";
+          break;
+        case 1:
+          return "投放中";
+          break;
+        case 2:
+          return "已过期";
+          break;
+        default:
+          return value;
+          break;
+      }
 })

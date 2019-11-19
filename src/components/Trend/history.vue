@@ -202,9 +202,7 @@ export default {
       this.getEcharts();
       this.choseDate(-6);
   },
-  beforeDestroy () {
-    this.chart.clear()
-  },
+ 
 };
 </script>
 <style lang="scss"  scoped>

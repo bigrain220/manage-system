@@ -24,7 +24,7 @@
             <el-button type="primary" @click="dialogVisible.newUnitdialogVisible = true">创建单元</el-button>
           </el-form-item>
         </el-form>
-        <el-table ref="unitTable" :data="tableData" style="width: 100%" size=“mini>
+        <el-table ref="unitTable" :data="tableData" style="width: 100%" size="medium">
           <el-table-column type="index" width="40"></el-table-column>
           <el-table-column label="单元名称" min-width="180">
             <template slot-scope="scope">
@@ -80,15 +80,15 @@
     </div>
 
     <!-- dialog -->
-    <el-dialog title="新建单元名称" :visible.sync="dialogVisible.newUnitdialogVisible">
-      <el-form>
-        <el-form-item label="单元名称" label-width="100">
-          <el-input  autocomplete="off" v-model="newUnitName"></el-input>
+    <el-dialog title="新建单元名称" :visible.sync="dialogVisible.newUnitdialogVisible" @closed="newUnitdialogClose">
+      <el-form :inline="true" ref="newUnitForm" :rules="newUnitRules" :model="newUnitForm">
+        <el-form-item label="单元名称：" label-width="100" prop="name">
+          <el-input autocomplete="off" v-model="newUnitForm.name" style="width:120%;"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible.newUnitdialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="newUnit">确 定</el-button>
+        <el-button @click="dialogVisible.newUnitdialogVisible = false" size="medium">取 消</el-button>
+        <el-button type="primary" @click="newUnitSubmit" size="medium">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -109,10 +109,16 @@ export default {
       },
       allData: "",
       tableData: [],
-      newUnitName:"",
-      dialogVisible:{
-        newUnitdialogVisible:false
-      }
+      newUnitForm: {name:""},
+      dialogVisible: {
+        newUnitdialogVisible: false
+      },
+      newUnitRules:{ 
+         name: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+      },
     };
   },
   methods: {
@@ -306,8 +312,18 @@ export default {
         })
         .catch(() => {});
     },
-    newUnit(){
-      console.log(this.newUnitName)
+    newUnitSubmit() {
+      this.$refs.newUnitForm.validate(valid => {
+        if (valid) {
+          console.log(this.newUnitForm.name);
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    newUnitdialogClose(){
+      this.newUnitForm.name="";
     }
   },
   mounted() {

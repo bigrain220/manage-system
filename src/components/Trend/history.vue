@@ -202,7 +202,6 @@ export default {
       this.getEcharts();
       this.choseDate(-6);
   },
- 
 };
 </script>
 <style lang="scss"  scoped>

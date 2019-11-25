@@ -3,54 +3,59 @@
     <Header :title="title"></Header>
     <div class="content-box">
       <div class="keywords-box">
-        <h4 class="title">关键词<span style="color:#999;"> (可不填满)</span></h4>
-        <!-- <el-button type="primary" size="mini" class="add-btn" @click="addInput">添加词库</el-button> -->
+        <h4 class="title">关键词<span style="color:#999;"> (可不填满,至少一个)</span></h4>
+        <el-button type="primary" size="mini" class="change-btn" @click="changeInput">文本域导入</el-button>
         <div class="input-box">
           <el-input :maxlength="20" :popper-class="`cname${inputIndex} cname`" v-model="itemsData[inputIndex]" size="small" placeholder="" :class="`iname${inputIndex} iname`" v-for="(inputItem, inputIndex) in itemsData" :key="inputIndex">
           </el-input>
         </div>
-        <h4 class="title">描述<span style="color:#999;"> (最多100字)</span></h4>
+        <h4 class="title">描述<span style="color:#999;"> (可不填,最多100字)</span></h4>
         <div class="input-box">
           <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" placeholder="请输入内容" v-model="descriptionVal" maxlength="100" show-word-limit @keydown.native="listen($event)">
           </el-input>
         </div>
         <div class="btn-box">
-          <el-button type="primary" size="medium">保存</el-button>
-          <el-button type="success" size="medium">重置</el-button>
+          <el-button type="primary" size="medium" @click="saveKeywords">保存</el-button>
+          <el-button type="success" size="medium" @click="resetDescription">重置</el-button>
         </div>
       </div>
-
     </div>
+    <!-- dialog -->
+    <el-dialog title="文本域导入" :visible.sync="dialogVisible.keyWordsDialog" width="30%">
+      <el-input type="textarea" :rows="2" placeholder="每一行保存为一个关键词" v-model="keyWordsTextArea">
+      </el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import Header from "../common/header";
+import API from "../../api/api";
 export default {
   name: "Keywords",
   components: { Header },
   data() {
     return {
-      title: "设置关键字",
+      title: "文字广告",
       itemsData: [],
-      descriptionVal: ""
+      descriptionVal: "",
+      dialogVisible: {
+        keyWordsDialog: false
+      },
+      keyWordsTextArea:"",
     };
   },
   methods: {
     init() {
-      var data = [
-        ["保温管"],
-        ["聚氨酯直埋保温钢管"],
-        ["聚氨酯发泡保温钢管"],
-        ["聚氨酯预制保温管"],
-        ["黑黄夹克保温管"],
-        ["聚氨酯泡沫黄夹克"],
-        ["塑套钢保温管"],
-        ["直埋夹套管"]
-      ];
-      data.map((item, index) => {
-        this.$set(this.itemsData, index, item[0]);
+      API.textGet({}).then(rs => {
+        console.log(rs);
+        this.itemsData = rs.word.split(",");
+        this.itemsData = this.initArr(this.itemsData);
+        this.descriptionVal = rs.desc;
       });
-      this.itemsData = this.initArr(this.itemsData);
     },
     initArr(params) {
       var arr = [];
@@ -61,14 +66,49 @@ export default {
       }
       return params.concat(arr);
     },
-    addInput() {
-      this.itemsData.push("");
-    },
     listen(event) {
       if (event.keyCode === 13) {
         event.preventDefault(); // 阻止浏览器默认换行操作
         return false;
       }
+    },
+    changeInput() {
+      this.dialogVisible.keyWordsDialog=true;
+    },
+    resetDescription() {
+      this.init();
+    },
+    saveKeywords() {
+      this.getArr();
+      var params = {};
+      params.word = this.deleteBlankArr(this.itemsData).join(",");
+      params.desc = this.descriptionVal;
+      API.textSave(params)
+        .then(rs => {
+          console.log(rs);
+          if (rs.code === 1) {
+            this.$alert("保存成功", "保存", {
+              confirmButtonText: "确定",
+              callback: action => {
+                this.init();
+              }
+            });
+          } else {
+            this.$alert("保存失败" + rs.msg, "保存", {
+              confirmButtonText: "确定",
+              callback: action => {}
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    },
+    getArr() {},
+    //删除数组的空项
+    deleteBlankArr(arr) {
+      var r = arr.filter(function(s) {
+        return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法
+      });
+      return r;
     }
   },
   mounted() {
@@ -100,10 +140,10 @@ export default {
     margin-bottom: 30px;
     min-height: 200px;
   }
-  .add-btn {
+  .change-btn {
     position: absolute;
     right: 10px;
-    top: 4px;
+    top: 70px;
   }
   .btn-box {
     display: flex;
@@ -119,6 +159,6 @@ export default {
 <style>
 .keywords-box .el-textarea__inner {
   max-height: 200px;
-  resize:none;
+  resize: none;
 }
 </style>

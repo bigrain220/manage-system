@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const env = require('../config/prod.env')
 
@@ -118,6 +119,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     ])
   ]
 })
+//删除之前所有打包文件
+webpackConfig.plugins.push( new CleanWebpackPlugin());
 
 if (config.build.productionGzip) {
   const CompressionWebpackPlugin = require('compression-webpack-plugin')

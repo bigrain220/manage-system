@@ -7,10 +7,9 @@
           <i class="iconfont iconguanggaotoufang"></i>
           <span>广告投放</span>
         </template>
-        <el-menu-item index="/user/index"><span class="space-item">物料管理</span></el-menu-item>
-        <el-menu-item index="/user/unit"><span class="space-item">单元管理</span></el-menu-item>
-        <el-menu-item index="/user/keywords"><span class="space-item">设置关键字</span></el-menu-item>
-        <el-menu-item index="/user/help"><span class="space-item">视频观看</span></el-menu-item>
+        <el-menu-item index="/user/index"><span class="space-item">媒体物料</span></el-menu-item>
+        <el-menu-item index="/user/media"><span class="space-item">媒体广告</span></el-menu-item>
+        <el-menu-item index="/user/keywords"><span class="space-item">文字广告</span></el-menu-item>
       </el-submenu>
       <el-submenu index="/">
         <template slot="title">

@@ -111,20 +111,20 @@
     <el-dialog title="修改" :visible.sync="dialogVisible.dialogAdunitVisible" class="adunitDialog">
       <el-form :model="AdunitForm" size="small" :inline="true" label-position="right" label-width="80px">
         <el-form-item label="编号：">
-          <el-input v-model="AdunitForm.number" autocomplete="off"></el-input>
+          <el-input v-model="AdunitForm.number" ></el-input>
         </el-form-item>
         <el-form-item label="排序：">
-          <el-input v-model="AdunitForm.order" autocomplete="off"></el-input>
+          <el-input v-model="AdunitForm.order" ></el-input>
         </el-form-item>
         <el-form-item label="名称：">
-          <el-input v-model="AdunitForm.name" autocomplete="off"></el-input>
+          <el-input v-model="AdunitForm.name" ></el-input>
         </el-form-item>
         <br/>
         <el-form-item label="行数：">
-          <el-input v-model="AdunitForm.name" autocomplete="off"></el-input>
+          <el-input v-model="AdunitForm.name" ></el-input>
         </el-form-item>
         <el-form-item label="列数：">
-          <el-input v-model="AdunitForm.name" autocomplete="off"></el-input>
+          <el-input v-model="AdunitForm.name" ></el-input>
         </el-form-item>
         <el-form-item label="尺寸：">
           <el-select v-model="AdunitForm.size" placeholder="">

@@ -34,6 +34,14 @@ export default {
           ((dateObj.getHours() > 9) ? dateObj.getHours() : '0' + dateObj.getHours()) + ':' +
           ((dateObj.getMinutes() > 9) ? dateObj.getMinutes() : '0' + dateObj.getMinutes()) + ':' +
           ((dateObj.getSeconds() > 9) ? dateObj.getSeconds() : '0' + dateObj.getSeconds());
-      }
+      },
+      changHost() {
+        var host = window.location.host;
+        if (host.indexOf("localhost") >= 0) {
+          return 'offLine'
+        } else {
+          return 'Line'
+        }
+      },
 
 }

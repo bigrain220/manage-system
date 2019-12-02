@@ -46,4 +46,57 @@ body{
 .content-box{padding:0 20px;position: relative;margin-top: 20px;}
 .el-table th{background: #eef1f6!important;}
 .el-pagination{text-align:right!important;;padding:18px 18px 10px 10px!important;}
-
+a,a:hover,a:visited{color:rgb(34, 153, 238);}
+/* analysis-header */
+#filters {
+    padding-bottom: 10px;
+}
+#filters .control-bar-wrapper {
+    position: relative;
+    padding-top: 20px;
+    padding-bottom: 15px;
+    z-index: 2;
+    color: #323437;
+}
+#filters .control-bar-wrapper .control-bar {
+    color: #323437;
+}
+#filters .control-bar-wrapper .control-bar .time {
+    margin-left: 20px;
+    display: inline-block;
+    height: 26px;
+    padding-right: 5px;
+    line-height: 26px;
+    color: #787a7d;
+}
+#filters .date-select-bar {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e1e3e4;
+    border-radius: 2px;
+}
+#filters  .control-bar-wrapper .control-bar .date-select-bar .trackable {
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 10px;
+    color: #323437;
+    background-color: #fff;
+    cursor: pointer;
+}
+#filters  .control-bar-wrapper .control-bar .date-select-bar .trackable:not(.cur):hover {
+    background: #f2f3f4;
+}
+#filters  .control-bar-wrapper .control-bar .date-select-bar .trackable:first-child {
+    border-radius: 2px 0 0 2px;
+    left: -1px;
+}
+#filters  .control-bar-wrapper .control-bar .date-select-bar .cur {
+    position: relative;
+    bottom: -1px;
+    margin-top: -2px;
+    padding-top: 1px;
+    height: 25px;
+    background-color: #4da7fd;
+    color: #fff;
+}

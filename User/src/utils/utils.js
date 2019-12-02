@@ -37,11 +37,13 @@ export default {
   },
   changHost() {
     var host = window.location.host;
-    if (host.indexOf("www.") < 0) {
+    if (host.indexOf("localhost") >= 0) {
       return 'offLine'
     } else {
       return 'Line'
     }
   },
+ 
+
 
 }

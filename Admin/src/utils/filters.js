@@ -2,7 +2,8 @@ import Vue from 'vue'
 
 Vue.filter('timeFilter', function (value) {
   if (!value) return ''
-  var dateObj = new Date(value);
+  var dateObj = new Date(value * 1000);
+  // var dateObj = new Date(value);
   return dateObj.getFullYear() + '-' +
     (((dateObj.getMonth() + 1) > 9) ? (dateObj.getMonth() + 1) : '0' + (dateObj.getMonth() + 1)) + '-' +
     ((dateObj.getDate() > 9) ? dateObj.getDate() : '0' + dateObj.getDate()) + ' ' +

@@ -44,9 +44,9 @@ export default new Router({
     	    }
         },
         {
-          path: 'directed',
-          component: resolve => require(['@/components/dataManage/directed'], resolve),
-          name: 'Directed',
+          path: 'order',
+          component: resolve => require(['@/components/advDirected/order'], resolve),
+          name: 'Order',
           meta: {
     	      requireAuth: true
     	    }
@@ -60,17 +60,25 @@ export default new Router({
     	    }
         },
         {
-          path: 'update',
-          component: resolve => require(['@/components/Trend/update'], resolve),
-          name: 'Update',
+          path: 'flow',
+          component: resolve => require(['@/components/Analysis/flow'], resolve),
+          name: 'flow',
           meta: {
     	      requireAuth: true
     	    }
         },
         {
-          path: 'historyDetail',
-          component: resolve => require(['@/components/Analysis/historyDetail'], resolve),
-          name: 'historyDetail',
+          path: 'sources',
+          component: resolve => require(['@/components/Analysis/sources'], resolve),
+          name: 'sources',
+          meta: {
+    	      requireAuth: true
+    	    }
+        },
+        {
+          path: 'visit',
+          component: resolve => require(['@/components/Analysis/visit'], resolve),
+          name: 'visit',
           meta: {
     	      requireAuth: true
     	    }

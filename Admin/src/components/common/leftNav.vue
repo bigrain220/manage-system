@@ -1,23 +1,15 @@
 <template>
   <div id="lefnav">
-    <el-menu :default-active="onRoutes" class="el-menu-vertical-demo left-ul" background-color="#fff"  router text-color="#434444" active-text-color="#29e" :collapse="isCollapse">
+    <el-menu :default-active="onRoutes" :default-openeds="['1', '2']" class="el-menu-vertical-demo left-ul" background-color="#fff"  router text-color="#434444" active-text-color="#29e" :collapse="isCollapse">
       <div class="radioGroup" id="radioGroup"  @click="change"><span class="nav-text" v-show="!isCollapse">网站导航</span><i :class="[isCollapse==true?'l':'r' , 'iconfont','icondaohang']"></i></div>
-      <el-submenu index="Module">
+      <el-submenu index="1">
         <template slot="title">
           <i class="iconfont iconguanggaotoufang"></i>
           <span>广告直投</span>
         </template>
         <el-menu-item index="/admin/index"><span class="space-item">物料管理</span></el-menu-item>
-        <el-menu-item index="/admin/help"><span class="space-item">视频观看</span></el-menu-item>
       </el-submenu>
-      <el-submenu index="/">
-        <template slot="title">
-          <i class="iconfont iconshujuguanli"></i>
-          <span>数据管理</span>
-        </template>
-        <el-menu-item index="/admin/directed"><i class="icon-danye iconfont"></i><span slot="title">投放报表</span></el-menu-item>
-      </el-submenu>
-      <el-submenu index="22">
+      <el-submenu index="2">
         <template slot="title" id="titles"><i class="iconfont iconbangzhushouce"></i><span slot="title">云盟配置</span>
         </template>
         <el-menu-item index="/admin/advertiseConfig"><span class="space-item">广告配置</span></el-menu-item>

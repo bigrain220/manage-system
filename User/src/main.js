@@ -16,23 +16,23 @@ Vue.use(ElementUI);
 Vue.prototype.$center = new Vue() //非父子组件传值
 
 // Line线上,offLine线下
-if(utils.changHost() == 'Line'){
-  router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
-            if (util.getCookie('session_val')=='') { // 判断缓存里面是否有 cookie  //在登录的时候设置它的值
-              Message.success('抱歉，你还没有登录请重新登录');
-              next({
-                path:'/login',
-                // query: {redirect: to.fullPath}  //// 将跳转的路由path作为参数，登录成功后跳转到该路由
-              })
-            } else {
-               next();
-            }
-        } else {
-            next();
-        }
-  });
-}
+// if(utils.changHost() == 'Line'){
+//   router.beforeEach((to, from, next) => {
+//     if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
+//             if (util.getCookie('session_val')=='') { // 判断缓存里面是否有 cookie  //在登录的时候设置它的值
+//               Message.success('抱歉，你还没有登录请重新登录');
+//               next({
+//                 path:'/login',
+//                 // query: {redirect: to.fullPath}  //// 将跳转的路由path作为参数，登录成功后跳转到该路由
+//               })
+//             } else {
+//                next();
+//             }
+//         } else {
+//             next();
+//         }
+//   });
+// }
 
 
 

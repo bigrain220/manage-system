@@ -7,14 +7,12 @@ import {
 } from 'element-ui'
 
 if (utils.changHost() == 'offLine') {
-  var base = 'http://ads.g4user.com'; //测试环境
+  var base = 'http://ads1.g3user.com'; //测试环境
 } else {
   var base = '//' + document.domain; //线上
 }
 let baseUrl = base + '/api';
-
-utils.setCookie('auth','vtAxrZEjYJW3uY0m5iDyKDoj3V.kIJVcCTpARnMxi6dnqTQqbKYcX8c.9Bn.uAqP9aTKN6DcfjHBGiiO1cit.YCwhrqI0qhysm-aOg7q4Uhl7E7XQ3LEEmC5Ro43NU2of8NRET6HQ6i2EPY-pyOk1w__',60)
-
+utils.setCookie('auth','LiveWSPFT16631328=c807865eb09b4c56860a9e20c76561ad',60)
 axios.defaults.timeout = 6000;
 axios.defaults.baseURL = baseUrl;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -42,12 +40,6 @@ axios.defaults.withCredentials = true; //用axios发送post请求自动set cooki
 //     return Promise.reject(error);
 //   });
 
-// export const tagsAPI = params=>{
-//     return  axios.get('/api/theme/tags/',{"params":params}).then(res=>res.data).catch(err=>err);
-// }
-// export const IndexAPI = params=>{
-//     return  axios.post('/index',qs.stringify(params)).then(res=>res.data).catch(err=>err);
-// }
 
 export default {
   login: params => {
@@ -59,20 +51,46 @@ export default {
   start: params => {
     return axios.post('/overview/start', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
+  //物料
   materialList: params => {
     return axios.post('/material/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   materialGet: params => {
     return axios.post('/material/get', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
+  materialDelete: params => {
+    return axios.post('/material/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  materialSign: params => {
+    return axios.post('/material/sign', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  materialAdd: params => {
+    return axios.post('/material/add', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  materialEdit: params => {
+    return axios.post('/material/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  //媒体
   mediaList: params => {
     return axios.post('/media/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   mediaAdd: params => {
     return axios.post('/media/add', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
+  mediaEdit: params => {
+    return axios.post('/media/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
   mediaDelete: params => {
     return axios.post('/media/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  spaceSearch: params => {
+    return axios.post('/space/search', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  spacePutin: params => {
+    return axios.post('/space/putin', qs.stringify(params),{timeout: 30000}).then(res => res.data).catch(err => err);
+  },
+  spaceReputin: params => {
+    return axios.post('/space/reputin', qs.stringify(params),{timeout: 30000}).then(res => res.data).catch(err => err);
   },
   textGet: params => {
     return axios.post('/text/get', qs.stringify(params)).then(res => res.data).catch(err => err);
@@ -80,5 +98,8 @@ export default {
   textSave: params => {
     return axios.post('/text/save', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
-
+  //云盟分析
+  trendTime: params => {
+    return axios.post('/trend/time', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
 }

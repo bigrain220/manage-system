@@ -20,16 +20,6 @@ export default new Router({
           component:resolve => require(['@/components/advDirected/material'],resolve)
         },
         {
-          path: 'help',
-          component: resolve => require(['@/components/advDirected/help'], resolve),
-          name: 'Help',
-        },
-        {
-          path: 'directed',
-          component: resolve => require(['@/components/dataManage/directed'], resolve),
-          name: 'Directed',
-        },
-        {
           path: 'advertiseConfig',
           component: resolve => require(['@/components/yunmengConfig/advertiseConfig'], resolve),
           name: 'advertiseConfig',

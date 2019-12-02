@@ -1,8 +1,8 @@
 <template>
-<div class="directed">
+<div class="sources-analysis">
     <Header :title="title"></Header>
     <div class="content-box">
-      <el-button type="primary">创建物料</el-button>
+      
 
 
 
@@ -15,11 +15,11 @@
 <script>
 import Header from "../common/header";
 export default {
-  name: "Directed",
+  name: "sources",
   components: { Header },
   data(){
       return{
-        title:"投放效果报表（只展示一个月内的数据，今天前的数据）"
+        title:"来源分析"
       }
   },
   methods: {

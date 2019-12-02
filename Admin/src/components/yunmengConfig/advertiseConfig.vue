@@ -22,8 +22,8 @@
     </Header>
     <div class="content-box">
       <div class="advertise-config-box">
-        <h4 class="title">{{selectCur| optionsFilter}}</h4>
-        <el-button type="primary" size="medium " class="add-btn">新增</el-button>
+        <h4 class="title"><el-tag>{{selectCur| optionsFilter}}</el-tag></h4>
+         <el-divider></el-divider>
         <table-options :options="selectCur"></table-options>
       </div>
     </div>
@@ -128,19 +128,15 @@ $text-color: #323437; // filters文字颜色
   width: 100%;
   .title {
     width: 100%;
-    height: 40px;
-    line-height: 40px;
+    height: 60px;
+    line-height: 60px;
     padding-left: 15px;
-    margin-bottom: 30px;
     font-size: 14px;
     font-weight: bold;
     color: #333;
   }
-  .add-btn {
-    position: absolute;
-    right: 15px;
-    top: 4px;
-    padding: 10px 30px;
+  .el-divider--horizontal{
+    margin:0;
   }
 }
 </style>

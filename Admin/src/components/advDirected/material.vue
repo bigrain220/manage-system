@@ -90,7 +90,7 @@ export default {
       multipleSelection: [],
       srcList: [],
       tableData: [],
-      checked: false,
+      checked: false
     };
   },
   methods: {
@@ -125,8 +125,10 @@ export default {
       arr = [...arr.slice(i), ...arr.slice(0, i)];
       this.srcList = arr;
       //处理位置偏移
-      document.querySelector("body").style.overflow = "hidden";
-      document.querySelector("body").style.marginRight = "8px";
+      if (this.hasScrollbar()) {
+        document.querySelector("body").style.overflow = "hidden";
+        document.querySelector("body").style.marginRight = "8px";
+      }
     },
     handleSizeChange(val) {
       this.size = val;
@@ -215,6 +217,13 @@ export default {
         this.total = rs.total;
         this.tableData = rs.rows;
       });
+    },
+    //判断有没有滚动条
+    hasScrollbar() {
+      return (
+        document.body.scrollHeight >
+        (window.innerHeight || document.documentElement.clientHeight)
+      );
     }
   },
   created() {
@@ -223,13 +232,11 @@ export default {
   mounted() {
     window.addEventListener("mousemove", function() {
       if (document.querySelector(".el-image-viewer__wrapper")) {
-        // document.querySelector("body").style.overflow = "hidden";
       } else {
-         document.querySelector("body").style.overflow = "";
+        document.querySelector("body").style.overflow = "";
         document.querySelector("body").style.marginRight = "0";
       }
     });
-  
   },
   beforeDestory() {
     window.removeEventListener("mousemove");
@@ -284,7 +291,6 @@ export default {
     cursor: pointer;
   }
 }
-
 </style>
 <style lang="scss">
 .Material {

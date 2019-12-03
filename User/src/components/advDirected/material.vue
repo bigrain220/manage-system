@@ -229,8 +229,10 @@ export default {
       arr = [...arr.slice(i), ...arr.slice(0, i)];
       this.srcList = arr;
       //处理位置偏移
-      document.querySelector("body").style.overflow = "hidden";
-      document.querySelector("body").style.marginRight = "8px";
+      if (this.hasScrollbar()) {
+        document.querySelector("body").style.overflow = "hidden";
+        document.querySelector("body").style.marginRight = "8px";
+      }
     },
     editClick(params) {
       // console.log(params);
@@ -357,17 +359,24 @@ export default {
       var i = this.order;
       this.materiaForm[i] = data;
       this.dialogVisible.uploadDialogVisible = false;
+    },
+    //判断有没有滚动条
+    hasScrollbar() {
+      return (
+        document.body.scrollHeight >
+        (window.innerHeight || document.documentElement.clientHeight)
+      );
     }
   },
   mounted() {
     this.getMaterialList({ page: this.currentPage, rows: this.size });
-    window.addEventListener("mousemove", function() {
-      if (document.querySelector(".el-image-viewer__wrapper")) {
-      } else {
-        document.querySelector("body").style.overflow = "";
-        document.querySelector("body").style.marginRight = "0";
-      }
-    });
+      window.addEventListener("mousemove", function() {
+        if (document.querySelector(".el-image-viewer__wrapper")) {
+        } else {
+          document.querySelector("body").style.overflow = "";
+          document.querySelector("body").style.marginRight = "0";
+        }
+      });
   },
   beforeDestory() {
     window.removeEventListener("mousemove");

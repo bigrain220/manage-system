@@ -6,7 +6,7 @@
         <el-form :inline="true" :model="searchForm" class="search-form" label-width="60px" size="medium">
           <el-form-item label="物料:">
             <el-select v-model="searchForm.mid" placeholder="">
-              <el-option label="全部" :value="0"></el-option>
+              <el-option label="全部" value=""></el-option>
               <el-option :label="item.name" :value="item.id" v-for="(item,index) in searchMaterial" :key="index"></el-option>
             </el-select>
           </el-form-item>
@@ -27,15 +27,17 @@
           </el-form-item>
         </el-form>
         <el-table ref="mediaTable" :data="tableData" style="width: 100%" size="medium" v-loading="loading">
-          <el-table-column width="60" label="序号">
+          <el-table-column width="60" label="序号" align="center">
             <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *size + 1}} </span></template>
+          </el-table-column>
+           <el-table-column label="广告ID" align="center" prop="id" >
           </el-table-column>
           <el-table-column label="广告名称" width="240">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.name" :maxlength="12" size="mini" @focus="mediaNameFocus($event)" @blur="styleControl.inputID=''" @change="mediaNameChange(scope.row)" :data-id="scope.row.id" :class="[scope.row.id == styleControl.inputID?'focusColor':'']"></el-input>
+              <el-input v-model="scope.row.name" :maxlength="12" size="mini" @focus="mediaNameFocus($event)" @blur="styleControl.inputID=''" @change="mediaNameChange(scope.row)" :data-id="scope.row.id" :class="['nameInput',scope.row.id == styleControl.inputID?'focusColor':'']"></el-input>
             </template>
           </el-table-column>
-          <el-table-column label="选择物料" width="160" align="center" class-name="select-column">
+          <el-table-column label="选择物料"  align="center" class-name="select-column" min-width="160">
             <template slot-scope="scope">
               <el-select placeholder="选择物料" size="mini" v-model="scope.row.mid" v-if="scope.row.id == styleControl.selectID" @change="mediaMidChange(scope.row)">
                 <el-option :label="item.name" :value="item.id" v-for="(item,index) in searchMaterial" :key="index"></el-option>
@@ -44,7 +46,7 @@
               <span class="mid-text" @click="midClick($event)" :data-id="scope.row.id" v-else>{{scope.row.mid | selectFilter}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="投放时间" width="140" align="center" class-name="select-column">
+          <el-table-column label="投放时间"  align="center" class-name="select-column" min-width="160">
             <template slot-scope="scope">
               <el-select placeholder="请选择" size="mini" v-model="scope.row.day" v-if="scope.row.id == styleControl.selectID2" @change="mediaDayChange(scope.row)">
                 <el-option label="7 天" :value="7"></el-option>
@@ -80,12 +82,12 @@
         <el-form-item label="名称：" prop="name">
           <el-input autocomplete="off" v-model="newMediaForm.name" style="width:55%;" :maxlength="12"></el-input>
         </el-form-item>
-        <el-form-item label="物料ID：" prop="mid">
+        <el-form-item label="物料：" prop="mid">
           <el-select v-model="newMediaForm.mid" placeholder="选择物料">
             <el-option :label="item.name" :value="item.id" v-for="(item,index) in searchMaterial" :key="index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="天数：" prop="day" requer>
+        <el-form-item label="天数：" prop="day">
           <el-input-number v-model="newMediaForm.day" controls-position="right" :min="7" :max="30"></el-input-number>
         </el-form-item>
       </el-form>
@@ -95,33 +97,7 @@
       </div>
     </el-dialog>
     <!-- list-dialog -->
-    <el-dialog :title='"投放列表( "+listDialogProps.title+" )"' :visible.sync="dialogVisible.listMediadialogVisible" @closed="listMediadialogClose" class="directed-list-dialog">
-      <el-form :inline="true" :model="listSearchForm" class="list-search-form" label-width="60px" size="mini">
-        <el-form-item label="状态:">
-          <el-select v-model="listSearchForm.status" placeholder="" style="width:100px;">
-            <el-option label="全部"  value=""></el-option>
-            <el-option label="处理" :value="0"></el-option>
-            <el-option label="待付" :value="1"></el-option>
-            <el-option label="待投" :value="2"></el-option>
-            <el-option label="已投" :value="3"></el-option>
-            <el-option label="队列" :value="4"></el-option>
-            <el-option label="完成" :value="5"></el-option>
-            <el-option label="失败" :value="6"></el-option>
-            <el-option label="退款" :value="7"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="listSearch">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="listReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible.listMediadialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="listMediaSubmit" size="small">确 定</el-button>
-      </div>
-    </el-dialog>
+    <directed-list-dialog v-if="dialogVisible.listMediadialogVisible" @listEvent="listEvent" :listDialogProps="listDialogProps"></directed-list-dialog>
     <!-- directed-dialog -->
     <directed-dialog v-if="dialogVisible.directedMediadialogVisible" @mapEvent="mapEvent" :directedObj="directedObj"></directed-dialog>
   </div>
@@ -135,7 +111,8 @@ export default {
   name: "media",
   components: {
     Header,
-    directedDialog: () => import("../common/directedDialog.vue")
+    directedDialog: () => import("../common/directedDialog.vue"),
+    directedListDialog: () => import("../common/directedListDialog.vue")
   },
   // inject: ["reload"],
   data() {
@@ -143,10 +120,7 @@ export default {
       title: "媒体广告",
       searchMaterial: [],
       searchForm: {
-        mid: 0,
-      },
-      listSearchForm:{
-        status:""
+        mid: "",
       },
       listDialogProps:{
         id:"",
@@ -177,7 +151,8 @@ export default {
           { required: true, message: "请输入活动名称", trigger: "blur" },
           { min: 3, max: 12, message: "长度在 3 到 12 个字符", trigger: "blur" }
         ],
-        mid: [{ required: true, message: "请选择物料", trigger: "blur" }]
+        mid: [{ required: true, message: "请选择物料", trigger: "blur" }],
+        day: [ { required: true, message: "请选择 7~30 的投放天数", trigger: "blur" }]
       }
     };
   },
@@ -189,12 +164,12 @@ export default {
       var params = {
         page: this.currentPage,
         rows: this.size,
-        mid: this.searchForm.mid,
       };
+      this.searchForm.mid!==""?params.mid=this.searchForm.mid:"";
       this.getMediaList(params);
     },
     resetSearch() {
-      this.searchForm = { mid: 0};
+      this.searchForm = { mid: ""};
       this.currentPage = 1;
       this.size = 10;
       this.search();
@@ -264,10 +239,10 @@ export default {
     dayClick(e) {
       this.styleControl.selectID2 = e.target.getAttribute("data-id");
     },
-    watchListClick(params) {
+    watchListClick(data) {
       this.dialogVisible.listMediadialogVisible = true;
-      this.listDialogProps.title = params.name;
-      this.listDialogProps.id = params.id;
+      this.listDialogProps.title = data.name;
+      this.listDialogProps.id = data.id;
     },
     directedClick(params) {
       this.directedObj.directedID = params.id;
@@ -347,21 +322,10 @@ export default {
       this.newMediaForm = { name: "", mid: "", day: "" };
       this.$refs.newMediaForm.resetFields();
     },
-    //投放列表list-dialog
-    listSearch(){
-      var params={};
-      params.mid=this.listDialogProps.id;
-      this.listSearchForm.status!==""?params.status=this.listSearchForm.status:"";
-      console.log(params)
+    //广告列表
+    listEvent(data){
+      this.dialogVisible.listMediadialogVisible = data;
     },
-    listReset(){
-      this.listSearchForm= {
-        mid: "",
-        status:""
-      }
-    },
-    listMediadialogClose() {},
-    listMediaSubmit() {},
     //投放广告
     mapEvent(data) {
       this.dialogVisible.directedMediadialogVisible = data;
@@ -423,7 +387,9 @@ export default {
   }
   .mid-text,
   .day-text {
-    width: 100%;
+    width: 160px;
+    height: 28px;
+    line-height: 28px;
     display: inline-block;
     cursor: pointer;
     background: #fff;
@@ -448,6 +414,7 @@ export default {
 }
 .media-box .select-column .cell .el-input .el-input__inner {
   text-align: center;
+  width: 160px;
 }
 .media-box .cell .el-input.focusColor .el-input__inner {
   border: 1px solid rgb(34, 153, 238);
@@ -455,9 +422,5 @@ export default {
 .media-box tr:hover .el-input__inner {
   background: #fff !important;
 }
-.directed-list-dialog .el-dialog {
-  width: 70%;
-  .el-dialog__title{font-size: 14px;font-weight: bold;}
-  .el-dialog__body{padding-top: 20px;}
-}
+.media-box .nameInput>input{padding:0 4px;}
 </style>

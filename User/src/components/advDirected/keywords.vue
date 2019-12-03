@@ -4,7 +4,7 @@
     <div class="content-box">
       <div class="keywords-box">
         <h4 class="title">关键词<span style="color:#999;"> (可不填满,至少一个)</span></h4>
-        <el-button type="primary" size="mini" class="change-btn" @click="changeInput">文本域导入</el-button>
+        <el-button type="primary" size="mini" class="change-btn" @click="changeInput">批量导入</el-button>
         <div class="input-box">
           <el-input :maxlength="20"  v-model="itemsData[inputIndex]" size="small" @blur="onBlur(inputIndex)"  :class="`iname${inputIndex} iname`" v-for="(inputItem, inputIndex) in itemsData" :key="inputIndex">
           </el-input>
@@ -21,7 +21,7 @@
       </div>
     </div>
     <!-- dialog -->
-    <el-dialog title="文本域导入(每行为一个关键词)" :visible.sync="dialogVisible.keyWordsDialog" width="40%"  @closed="keyWordsDialogClose" class="keyWords-dialog">
+    <el-dialog title="批量导入(每行为一个关键词)" :visible.sync="dialogVisible.keyWordsDialog" width="40%"  @closed="keyWordsDialogClose" class="keyWords-dialog">
       <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 10}" placeholder="每一行保存为一个关键词" v-model="keyWordsTextArea" size="mini" resize="none">
       </el-input>
       <span slot="footer" class="dialog-footer">

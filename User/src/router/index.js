@@ -45,7 +45,7 @@ export default new Router({
         },
         {
           path: 'order',
-          component: resolve => require(['@/components/advDirected/order'], resolve),
+          component: resolve => require(['@/components/order/order'], resolve),
           name: 'Order',
           meta: {
     	      requireAuth: true

@@ -11,7 +11,7 @@
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-table ref="multipleTable" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" border stripe size="small">
+    <el-table ref="multipleTable" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" border stripe size="mini">
       <el-table-column type="selection" width="50">
       </el-table-column>
       <el-table-column label="标题">
@@ -24,7 +24,7 @@
       <el-table-column label="价格(元)" prop="price" width="160">
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 50, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="false"></el-pagination>
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 50, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="true"></el-pagination>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="allDirected" size="mini">全部投放</el-button>
       <el-button type="primary" @click="selectedDirected" size="mini">选中投放</el-button>

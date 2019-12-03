@@ -106,7 +106,7 @@ export default {
 }
 .radioGroup { background: #f2f3f4;color: #323437;text-align: center;width: 100%;border: none;border-radius: 0;border-bottom: 1px solid #e1e3e4;overflow: hidden;
 padding:0 20px;box-sizing: border-box;cursor: pointer;height: 40px;line-height: 40px;}
-.nav-text{float: left;margin-left: 22px;font-size: 12px;}
+.nav-text{float: left;margin-left: 22px;font-size: 14px;}
 .radioGroup i{font-size: 14px;}
 .left-ul{border-right: 1px solid #e6e6e6!important;box-sizing: border-box; height: 100%;width: 200px;}
 .left-ul.el-menu--collapse{width: 64px;}
@@ -115,7 +115,7 @@ padding:0 20px;box-sizing: border-box;cursor: pointer;height: 40px;line-height: 
 .el-menu-item.is-active{background: #fff!important;}
 </style>
 <style>
-#lefnav .el-submenu__title,.el-menu-item,.el-submenu .el-menu-item{height: 40px!important;line-height: 40px!important;font-size: 12px;}
+#lefnav .el-submenu__title,.el-menu-item,.el-submenu .el-menu-item{height: 40px!important;line-height: 40px!important;font-size: 14px;}
 .el-submenu.is-active .el-submenu__title>*{color: rgb(34, 153, 238)!important;}
 ul.el-menu--popup{padding: 0!important;}
 #lefnav .el-menu-item:hover,.el-submenu__title:hover,ul.el-menu--popup li:hover{

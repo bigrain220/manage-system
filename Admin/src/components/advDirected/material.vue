@@ -45,7 +45,7 @@
             </template>
           </el-table-column>
           <el-table-column label="状态" width="80" align="center">
-            <template slot-scope="scope"><span :class="[scope.row.status==1?'status-pass':scope.row.status==2?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
+            <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
           </el-table-column>
           <el-table-column label="更新时间" width="180" align="center">
             <template slot-scope="scope">{{ scope.row.modify_time|timeFilter }}</template>
@@ -221,8 +221,7 @@ export default {
     this.getMaterialList({ page: this.currentPage, rows: this.size });
   },
   mounted() {
-    var that =this;
-    window.addEventListener("click", function() {
+    window.addEventListener("mousemove", function() {
       if (document.querySelector(".el-image-viewer__wrapper")) {
         // document.querySelector("body").style.overflow = "hidden";
       } else {
@@ -238,13 +237,13 @@ export default {
   filters: {
     statusFilter: function(value) {
       switch (value) {
-        case 0:
+        case 1:
           return "待审核";
           break;
-        case 1:
+        case 2:
           return "通过";
           break;
-        case 2:
+        case 3:
           return "拒绝";
           break;
         default:

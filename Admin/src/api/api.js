@@ -12,7 +12,7 @@ if (utils.changHost() == 'offLine') {
 }
 let baseUrl = base + '/admin';
 
-utils.setCookie('ad_auth','LiveWSPFT16631328=c807865eb09b4c56860a9e20c76561ad; NPFT16631328fistvisitetime=1554339830093; NPFT16631328visitecounts=1; NPFT16631328IP=%7C220.112.233.179%7C; NPFT16631328lastvisitetime=1554339849473; NPFT16631328visitepages=2; _qddaz=QD.gjq2mz.toz9w.jx9p8by1; pgv_pvi=5563981824; UM_distinctid=16d0073659a1a5-0613eb55f798f1-4f4f082e-1fa400-16d0073659b580',60)
+// utils.setCookie('ad_auth','npi9qweNl7x0XvLNlEPaSgOx9qXx1gQz1cl27JvPHedcpub93T8AeF3JwWNxLz1sutX7yA.DauTnaAPhtL5XN9Cdyx1Z424tWA8-S6tSFXQh73g5fPrnKRpWNZ7E3-M2e9.KeFETJYR-U3xQXnM5dw__',60)
 
 axios.defaults.timeout = 6000;
 axios.defaults.baseURL = baseUrl;

@@ -12,7 +12,7 @@ if (utils.changHost() == 'offLine') {
   var base = '//' + document.domain; //线上
 }
 let baseUrl = base + '/api';
-utils.setCookie('auth','LiveWSPFT16631328=c807865eb09b4c56860a9e20c76561ad',60)
+// utils.setCookie('auth','LiveWSPFT16631328=c807865eb09b4c56860a9e20c76561ad',60)
 axios.defaults.timeout = 6000;
 axios.defaults.baseURL = baseUrl;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -92,11 +92,18 @@ export default {
   spaceReputin: params => {
     return axios.post('/space/reputin', qs.stringify(params),{timeout: 30000}).then(res => res.data).catch(err => err);
   },
+  spaceList: params => {
+    return axios.post('/space/list', qs.stringify(params),{timeout: 30000}).then(res => res.data).catch(err => err);
+  },
   textGet: params => {
     return axios.post('/text/get', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   textSave: params => {
     return axios.post('/text/save', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  //订单
+  orderList: params => {
+    return axios.post('/order/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   //云盟分析
   trendTime: params => {

@@ -23,7 +23,7 @@
           </el-table-column>
           <el-table-column label="物料" align="center" min-width="150">
             <template slot-scope="scope">
-              <img :src=item.img_url class="img-list" v-for="(item,index) in scope.row.imgs" :key="item.id" @click="imgClick(scope.row.imgs,index)" title="点击查看大图">
+              <el-image :src=item.img_url class="img-list" :preview-src-list="srcList" v-for="(item,index) in scope.row.imgs" :key="index" @click="imgClick(scope.row.imgs,index)"></el-image>
             </template>
           </el-table-column>
           <el-table-column label="推广网址" prop="url" align="center" width="320">
@@ -45,7 +45,7 @@
     <el-dialog :title="submitType" :visible.sync="dialogVisible.materiaVisible" class="materiaDialog" :close-on-click-modal="false">
       <el-form :model="materiaForm" ref="materiaForm" size="small" label-position="right" label-width="100px">
         <el-form-item label="物料名称:">
-          <el-input v-model="materiaForm.name" style="width: 100%;" placeholder="请选择物料名称"></el-input>
+          <el-input v-model="materiaForm.name" style="width: 100%;" placeholder="请选择物料名称" maxlength="12"></el-input>
         </el-form-item>
         <el-form-item label="广告大图一:">
           <el-input v-model="materiaForm.img_1" disabled style="width: 620px;" placeholder="请选择728*120的图片"></el-input>
@@ -56,32 +56,32 @@
           <el-button icon="el-icon-upload2" circle size="small" class="upload-btn" @click="imgUploadClick('img_2')"></el-button>
         </el-form-item>
         <el-form-item label="广告小图一:">
-          <el-input v-model="materiaForm.title_3" class="small-title" placeholder="请输入小图一标题"></el-input>
+          <el-input v-model="materiaForm.title_3" class="small-title" placeholder="请输入小图一标题" maxlength="12"></el-input>
           <el-input v-model="materiaForm.img_3" class="small-img" placeholder="请选择300*300的图片"></el-input>
           <el-button icon="el-icon-upload2" circle size="small" class="upload-btn" @click="imgUploadClick('img_3')"></el-button>
         </el-form-item>
         <el-form-item label="广告小图二:">
-          <el-input v-model="materiaForm.title_4" class="small-title" placeholder="请输入小图二标题"></el-input>
+          <el-input v-model="materiaForm.title_4" class="small-title" placeholder="请输入小图二标题" maxlength="12"></el-input>
           <el-input v-model="materiaForm.img_4" class="small-img" placeholder="请选择300*300的图片"></el-input>
           <el-button icon="el-icon-upload2" circle size="small" class="upload-btn" @click="imgUploadClick('img_4')"></el-button>
         </el-form-item>
         <el-form-item label="广告小图三:">
-          <el-input v-model="materiaForm.title_5" class="small-title" placeholder="请输入小图三标题"></el-input>
+          <el-input v-model="materiaForm.title_5" class="small-title" placeholder="请输入小图三标题" maxlength="12"></el-input>
           <el-input v-model="materiaForm.img_5" class="small-img" placeholder="请选择300*300的图片"></el-input>
           <el-button icon="el-icon-upload2" circle size="small" class="upload-btn" @click="imgUploadClick('img_5')"></el-button>
         </el-form-item>
         <el-form-item label="广告小图四:">
-          <el-input v-model="materiaForm.title_6" class="small-title" placeholder="请输入小图四标题"></el-input>
+          <el-input v-model="materiaForm.title_6" class="small-title" placeholder="请输入小图四标题" maxlength="12"></el-input>
           <el-input v-model="materiaForm.img_6" class="small-img" placeholder="请选择300*300的图片"></el-input>
           <el-button icon="el-icon-upload2" circle size="small" class="upload-btn" @click="imgUploadClick('img_6')"></el-button>
         </el-form-item>
         <el-form-item label="广告小图五:">
-          <el-input v-model="materiaForm.title_7" class="small-title" placeholder="请输入小图五标题"></el-input>
+          <el-input v-model="materiaForm.title_7" class="small-title" placeholder="请输入小图五标题" maxlength="12"></el-input>
           <el-input v-model="materiaForm.img_7" class="small-img" placeholder="请选择300*300的图片"></el-input>
           <el-button icon="el-icon-upload2" circle size="small" class="upload-btn" @click="imgUploadClick('img_7')"></el-button>
         </el-form-item>
         <el-form-item label="广告小图六:">
-          <el-input v-model="materiaForm.title_8" class="small-title" placeholder="请输入小图六标题"></el-input>
+          <el-input v-model="materiaForm.title_8" class="small-title" placeholder="请输入小图六标题" maxlength="12"></el-input>
           <el-input v-model="materiaForm.img_8" class="small-img" placeholder="请选择300*300的图片"></el-input>
           <el-button icon="el-icon-upload2" circle size="small" class="upload-btn" @click="imgUploadClick('img_8')"></el-button>
         </el-form-item>
@@ -93,10 +93,10 @@
           <el-input v-model="materiaForm.url" style="width: 100%;" placeholder="请输入推广地址"></el-input>
         </el-form-item>
         <el-form-item label="QQ:">
-          <el-input v-model="materiaForm.qq" style="width: 100%;" placeholder="请输入QQ"></el-input>
+          <el-input v-model="materiaForm.qq" style="width: 100%;" placeholder="请输入QQ" maxlength="12"></el-input>
         </el-form-item>
         <el-form-item label="手机号码:">
-          <el-input v-model="materiaForm.mobile" style="width: 100%;" placeholder="请输入手机号码"></el-input>
+          <el-input v-model="materiaForm.mobile" style="width: 100%;" placeholder="请输入手机号码" maxlength="11"></el-input>
         </el-form-item>
       </el-form>
       <div class="materia-dialog-bottom">
@@ -136,6 +136,7 @@ export default {
   components: { Header, imgUpload: () => import("../common/imgUpload.vue") },
   data() {
     return {
+      srcList: [],
       title: "媒体物料",
       total: 10,
       size: 10,
@@ -220,8 +221,16 @@ export default {
       this.resetForm(this.materiaForm);
       this.dialogVisible.materiaVisible = true;
     },
-    imgClick(params, index) {
-      window.open(params[index].img_url);
+    imgClick(params, i) {
+      var arr = [];
+      params.map(item => {
+        arr.push(item.img_url);
+      });
+      arr = [...arr.slice(i), ...arr.slice(0, i)];
+      this.srcList = arr;
+      //处理位置偏移
+      document.querySelector("body").style.overflow = "hidden";
+      document.querySelector("body").style.marginRight = "8px";
     },
     editClick(params) {
       // console.log(params);
@@ -304,11 +313,12 @@ export default {
         // console.log(params.match(/msg": "(\S*)"/)[1])
         var msg = params.match(/msg": "(\S*)"/)[1];
         var text = "";
-        if (msg === "ILLEGAL_IMG_REPEAT") {
-          text = "请不要上传重复图片";
-        } else {
-          text = msg;
-        }
+        // if (msg === "ILLEGAL_IMG_REPEAT") {
+        //   text = "请不要上传重复图片";
+        // } else {
+        //   text = msg;
+        // }
+        text = msg;
         this.$alert("提交失败: " + text, "提交物料", {
           confirmButtonText: "确定",
           type: "error",
@@ -351,6 +361,16 @@ export default {
   },
   mounted() {
     this.getMaterialList({ page: this.currentPage, rows: this.size });
+    window.addEventListener("mousemove", function() {
+      if (document.querySelector(".el-image-viewer__wrapper")) {
+      } else {
+        document.querySelector("body").style.overflow = "";
+        document.querySelector("body").style.marginRight = "0";
+      }
+    });
+  },
+  beforeDestory() {
+    window.removeEventListener("mousemove");
   },
   filters: {
     statusFilter: function(value) {
@@ -403,6 +423,23 @@ export default {
   height: 32px;
   margin-right: 2px;
   cursor: pointer;
+}
+.img-list:nth-child(1) {
+  width: 184px;
+}
+.img-list:nth-child(2) {
+  width: 18px;
+}
+.img-list:nth-child(3),
+.img-list:nth-child(4),
+.img-list:nth-child(5),
+.img-list:nth-child(6),
+.img-list:nth-child(7),
+.img-list:nth-child(8) {
+  width: 32px;
+}
+.img-list:nth-child(9) {
+  width: 242px;
 }
 </style>
 <style lang="scss">

@@ -21,7 +21,7 @@
       </el-table-column>
       <el-table-column label="日均展现" prop="pv" width="160">
       </el-table-column>
-      <el-table-column label="价格(元)" prop="price" width="160">
+      <el-table-column label="价格(币)" prop="price" width="160">
       </el-table-column>
     </el-table>
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 50, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="true"></el-pagination>

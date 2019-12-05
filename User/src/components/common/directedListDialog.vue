@@ -106,7 +106,9 @@ export default {
     listMediadialogClose() {
       this.isShow = false;
     },
-    listMediaSubmit() {},
+    listMediaSubmit() {
+      this.isShow = false;
+    },
     handleSizeChange(val) {
       this.size = val;
       this.listSearch();

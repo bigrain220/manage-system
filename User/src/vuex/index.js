@@ -3,28 +3,28 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
-    title: '',
+    dateChosed: '-6',
   },
   getters:{
-    getTitle(state) {  //方法名随意,主要是来承载变化的city的值
-        return state.city
+    getDateChosed(state) { 
+        return state.dateChosed
      },
     //  getCityId(){  //方法名随意,主要是用来承载变化的cityID的值
     //     return state.cityID
     //  }
   },
   mutations: {
-    setTitle(state, value) {
-      state.city = value;
+    setDateChosed(state, value) {
+      state.dateChosed = value;
     },
     // setCityID(state, value) {
     //   state.cityID = value;
     // }
   },
   actions: {
-    selectTitle(context, params) {
-      // context.commit('setCity', params.city);
-      context.commit('setTitle', params);
+    selectDateChosed(context, params) {
+      // context.commit('setCityID', params.cityID);
+      context.commit('setDateChosed', params);
     }
   }
 });

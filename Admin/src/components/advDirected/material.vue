@@ -28,40 +28,38 @@
         <el-table ref="multipleTable" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" @select-all="selectAll" border stripe>
           <el-table-column type="selection" width="50">
           </el-table-column>
-          <el-table-column label="物料名称" prop="name" width="180" align="center">
-          </el-table-column>
-          <el-table-column label="物料" align="center">
-            <template slot-scope="scope">
-              <el-image :src=item.img_url class="img-list" :preview-src-list="srcList" v-for="(item,index) in JSON.parse(scope.row.imgs)" :key="index" @click="imgClick(scope.row.imgs,index)"></el-image>
-            </template>
-          </el-table-column>
           <el-table-column label="UID" prop="uid" width="100" align="center">
           </el-table-column>
-          <!-- <el-table-column label="用户名" prop="uname" width="100" align="center">
-          </el-table-column> -->
-          <el-table-column label="推广网址" prop="url" align="center">
+          <el-table-column label="名称" prop="name" width="180" align="center">
+          </el-table-column>
+          <el-table-column label="物料" align="center" min-width="230">
+            <template slot-scope="scope">
+              <el-image lazy :src=item.img_url class="img-list" :preview-src-list="srcList" v-for="(item,index) in JSON.parse(scope.row.imgs)" :key="index" @click="imgClick(scope.row.imgs,index)"></el-image>
+            </template>
+          </el-table-column>
+          <el-table-column label="推广网址" prop="url" align="center" width="200">
             <template slot-scope="scope">
               <a target="_blank" :href="scope.row.url">{{scope.row.url}}</a>
             </template>
           </el-table-column>
-          <el-table-column label="状态" width="80" align="center">
-            <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
-          </el-table-column>
           <el-table-column label="更新时间" width="180" align="center">
             <template slot-scope="scope">{{ scope.row.modify_time|timeFilter }}</template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="220">
+             <el-table-column label="状态" width="80" align="center">
+            <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="160">
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="passClick(scope.row.id)">审核通过</el-button>
-              <el-button type="warning" size="mini" @click="noPassClick(scope.row.id)">审核不通过</el-button>
+              <el-button type="primary" size="mini" @click="passClick(scope.row.id)">通过</el-button>
+              <el-button type="warning" size="mini" @click="noPassClick(scope.row.id)">拒绝</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 20, 30, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="true"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="true"></el-pagination>
         <div class="group-btn">
           <el-checkbox v-model="checked" style="margin-right:14px;" @change="checkClick"></el-checkbox>
-          <el-button type="primary" size="mini" @click="batchPass">批量审核通过</el-button>
-          <el-button type="warning" size="mini" @click="batchNoPass">批量审核不通过</el-button>
+          <el-button type="primary" size="mini" @click="batchPass">批量通过</el-button>
+          <el-button type="warning" size="mini" @click="batchNoPass">批量拒绝</el-button>
         </div>
       </div>
     </div>
@@ -80,7 +78,7 @@ export default {
     return {
       title: "物料列表",
       total: 10,
-      size: 20,
+      size: 10,
       currentPage: 1,
       formInline: {
         name: "username",
@@ -113,7 +111,7 @@ export default {
     resetSearch() {
       this.formInline = { name: "username", value: "", status: "" };
       this.currentPage = 1;
-      this.size = 20;
+      this.size = 10;
       this.search();
     },
     imgClick(params, i) {
@@ -160,11 +158,18 @@ export default {
       this.saveEvent(params);
     },
     noPassClick(id) {
-      var params = {
-        ids: id,
-        status: 3
-      };
-      this.saveEvent(params);
+       this.$prompt('请输入拒绝理由', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+            var params = {
+              ids: id,
+              status: 3,
+              comment:value,
+            };
+           this.saveEvent(params);
+        }).catch(() => {   
+        });
     },
     checkClick() {
       if (this.checked) {
@@ -216,6 +221,12 @@ export default {
         // console.log(rs)
         this.total = rs.total;
         this.tableData = rs.rows;
+        // this.tableData.map((item,index)=>{
+        //   if(item.url.length>26){
+
+        //   }
+        //   console.log(item.url,item.url.length)
+        // })
       });
     },
     //判断有没有滚动条
@@ -290,6 +301,23 @@ export default {
     margin-right: 2px;
     cursor: pointer;
   }
+.img-list:nth-child(1) {
+  width: 184px;
+}
+.img-list:nth-child(2) {
+  width: 18px;
+}
+.img-list:nth-child(3),
+.img-list:nth-child(4),
+.img-list:nth-child(5),
+.img-list:nth-child(6),
+.img-list:nth-child(7),
+.img-list:nth-child(8) {
+  width: 32px;
+}
+.img-list:nth-child(9) {
+  width: 242px;
+}
 }
 </style>
 <style lang="scss">
@@ -307,5 +335,6 @@ export default {
     width: 100px;
   }
 }
+.el-message-box{width: 40%;}
 </style>
 

@@ -18,8 +18,8 @@
               <div class="l time-span clearfix">
                 <a :class="['l',formatSelected==='0'?'selected':'']" href="javascript:void(0)" @click="choseFormat('0')">按时</a>
                 <a :class="['l',formatSelected==='1'?'selected':'']" href="javascript:void(0)" @click="choseFormat('1')">按日</a>
-                <a :class="['l',,'disabled',formatSelected==='2'?'selected':'']" href="javascript:void(0)" @click="choseFormat('2')">按周</a>
-                <a :class="['l',,'disabled',formatSelected==='3'?'selected':'']" href="javascript:void(0)" @click="choseFormat('3')">按月</a>
+                <a :class="['l',,'disabled',formatSelected==='2'?'selected':'']" href="javascript:void(0)">按周</a>
+                <a :class="['l',,'disabled',formatSelected==='3'?'selected':'']" href="javascript:void(0)">按月</a>
               </div>
             </div>
 
@@ -28,8 +28,23 @@
       </template>
     </Header>
     <div class="content-box">
-      <div id="flowChart" style="width:100%;height:400px;background:#fff;"></div>
-      
+      <div class="flow-box">
+        <h3 class="title">趋势图</h3>
+        <div id="flowChart" style="width:100%;height:400px;background:#fff;" v-loading="loading.echarts"></div>
+        <div class="table-title"></div>
+        <el-table :data="tableData" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort">
+          <el-table-column label="序号" width="80">
+            <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *size + 1}} </span></template>
+          </el-table-column>
+          <el-table-column prop="date" label="时间" sortable="custom" ref="dateSort">
+          </el-table-column>
+          <el-table-column label="" align="center">
+          </el-table-column>
+          <el-table-column prop="amount" label="浏览量(pv)" align="center" sortable="custom" ref="amountSort">
+          </el-table-column>
+        </el-table>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -47,24 +62,41 @@ export default {
   data() {
     return {
       title: "流量分析",
-      dateCur: "-6",
+      loading: {
+        echarts: false,
+        table: false
+      },
+      dateCur: "",
       formatSelected: "0",
-      num_data: [],//按时显示时的x轴数据
-      x_data: [],//x轴数据
-      y_data: [],//y轴数据
-      myChart: ""
+      num_data: [], //按时显示时的x轴数据
+      x_data: [], //x轴数据
+      y_data: [], //y轴数据
+      myChart: "",
+      tableData: [],
+      order: "tm,desc",
+      total: 10,
+      size: 10,
+      currentPage: 1
     };
   },
   methods: {
     choseDate(params) {
-      this.dateCur = params;
+      this.$store.commit("setDateChosed", params);
+      this.dateCur = this.$store.state.dateChosed;
       this.getFlowData();
+      this.order="tm,desc";
+      this.getTableData();
+      this.$refs.dateSort.columnConfig.order = '';
+      this.$refs.amountSort.columnConfig.order = '';
     },
     choseFormat(params) {
       this.formatSelected = params;
       this.getFlowData();
+      this.getTableData();
     },
+    //echarts
     getFlowData() {
+      this.loading.echarts = true;
       this.x_data = [];
       this.y_data = [];
       this.num_data = [];
@@ -82,8 +114,9 @@ export default {
           }
           this.y_data.push(res.items[1][i][0]);
           this.num_data.push(i);
-        };
+        }
         this.setEcharts();
+        this.loading.echarts = false;
       });
     },
     initEcharts() {
@@ -105,9 +138,10 @@ export default {
         color: "rgb(79, 168, 249)",
         legend: {
           left: "center",
-          bottom: 5,
+          bottom: 0,
           itemWidth: 4,
           itemHeight: 10,
+          selectedMode:false,//取消图例上的点击事件
           textStyle: {
             padding: [0, 0, 0, 12]
           },
@@ -188,24 +222,32 @@ export default {
           }
         ],
         tooltip: {
-                formatter: function (params) {
-                    // console.log(params[0])
-                    var tem = params[0].name;
-                    if (tem.indexOf('/') < 0) {
-                        tem > 9 ? tem = tem + ":00 - " + tem + ":59" : tem = "0" + tem + ":00 - " + "0" + tem + ":59";
-                    }
-                    var val = params[0].value;
-                    val > 0 ? val = val : val = '--'
-                    var res =
-                        '<div><div style="height:35px;line-height:35px;padding:0 8px;background:rgba(237,233,233,0.4)">' +
-                        tem +
-                        '</div><div style="height:45px;line-height:45px;overflow:hidden;padding:0 8px;">' +
-                        '<span style="float:left">' +
-                        '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
-                        params[0].color + ';"></span>' + params[0].seriesName + '</span>' +
-                        '<span style="float:right">' + val + '</span>' + '</div></div>'
-                    return res;
-                },
+          formatter: function(params) {
+            // console.log(params[0])
+            var tem = params[0].name;
+            if (tem.indexOf("/") < 0) {
+              tem > 9
+                ? (tem = tem + ":00 - " + tem + ":59")
+                : (tem = "0" + tem + ":00 - " + "0" + tem + ":59");
+            }
+            var val = params[0].value;
+            val > 0 ? (val = val) : (val = "--");
+            var res =
+              '<div><div style="height:35px;line-height:35px;padding:0 8px;background:rgba(237,233,233,0.4)">' +
+              tem +
+              '</div><div style="height:45px;line-height:45px;overflow:hidden;padding:0 8px;">' +
+              '<span style="float:left">' +
+              '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
+              params[0].color +
+              ';"></span>' +
+              params[0].seriesName +
+              "</span>" +
+              '<span style="float:right">' +
+              val +
+              "</span>" +
+              "</div></div>";
+            return res;
+          }
         },
         legend: {
           data: arr
@@ -215,15 +257,60 @@ export default {
           data: that.y_data
         }
       });
+    },
+    //table
+    getTableData() {
+      this.loading.table = true;
+      var params = {
+        method: "a",
+        page: this.currentPage,
+        rows: this.size,
+        date: this.dateCur,
+        format: this.formatSelected,
+        order: this.order
+      };
+      API.trendTime(params).then(rs => {
+        console.log(rs);
+        this.loading.table = false;
+        this.total = rs.total;
+        let arr = [];
+        rs.items[0].map((data, i) => {
+          var obj = {};
+          obj.date = data[0];
+          obj.amount = rs.items[1][i][0];
+          arr.push(obj);
+        });
+        // console.log(arr);
+        this.tableData = arr;
+      });
+    },
+    changeSort(params) {
+      // console.log(params)
+      let type = "";
+      let order = "";
+      params.order === "ascending" ? (order = "asc") : (order = "desc");
+      params.prop === "amount" ? (type = "pv") : (type = "tm");
+      this.order = type + "," + order;
+      this.getTableData();
+    },
+    handleSizeChange(val) {
+      this.size = val;
+      this.getTableData();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getTableData();
     }
   },
   mounted() {
+    this.dateCur = this.$store.state.dateChosed;
     this.getFlowData();
     this.initEcharts();
-    var that =this; 
-    window.onresize = function () {
-        that.myChart ? that.myChart.resize() : "";
-    } 
+    this.getTableData();
+    var that = this;
+    window.onresize = function() {
+      that.myChart ? that.myChart.resize() : "";
+    };
   }
 };
 </script>
@@ -264,5 +351,21 @@ export default {
 
 .time-span a:not(.selected):hover {
   background: #f2f3f4;
+}
+.flow-analysis {
+  .content-box {
+    .table-title {
+      height: 24px;
+      background: #fff;
+    }
+    .title {
+      background: #fff;
+      height: 42px;
+      line-height: 42px;
+      font-size: 16px;
+      border-left: #666 3px solid;
+      padding-left: 15px;
+    }
+  }
 }
 </style>

@@ -52,14 +52,6 @@ export default new Router({
     	    }
         },
         {
-          path: 'history',
-          component: resolve => require(['@/components/Trend/history'], resolve),
-          name: 'History',
-          meta: {
-    	      requireAuth: true
-    	    }
-        },
-        {
           path: 'flow',
           component: resolve => require(['@/components/Analysis/flow'], resolve),
           name: 'flow',

@@ -105,8 +105,14 @@ export default {
   orderList: params => {
     return axios.post('/order/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
-  //云盟分析
+  //效果查看
   trendTime: params => {
     return axios.post('/trend/time', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  sourceWord: params => {
+    return axios.post('/source/word', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  visitPage: params => {
+    return axios.post('/visit/page', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
 }

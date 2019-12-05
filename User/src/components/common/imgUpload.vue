@@ -99,7 +99,11 @@ export default {
               this.path = res.data.path;
               this.$emit("mapEvent", this.path);
             } else {
-              this.$message.error("上传失败: " + res.data.message);
+              if(res.data.path){
+                this.$message.warning("上传失败: " + res.data.message+", 路径为："+ res.data.path);
+              }else{
+                this.$message.error("上传失败: " + res.data.message);
+              }
             }
           });
       } else {

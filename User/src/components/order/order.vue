@@ -26,12 +26,12 @@
           </el-table-column>
           <el-table-column label="广告ID" prop="mid">
           </el-table-column>
-          <el-table-column label="投放时间">
+          <el-table-column label="天数">
             <template slot-scope="scope">
               <span>{{scope.row.day}} </span>天
             </template>
           </el-table-column>
-          <el-table-column label="投放总数" prop="num">
+          <el-table-column label="总页面" prop="num">
           </el-table-column>
           <el-table-column label="币种" prop="cid">
             <template slot-scope="scope">
@@ -153,6 +153,7 @@ export default {
   background: #fff;
   padding: 0 10px;
   overflow: hidden;
+  min-height: 400px;
   .search-form {
     margin-top: 20px;
     margin-bottom: 26px;

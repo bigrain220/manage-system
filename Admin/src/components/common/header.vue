@@ -25,7 +25,7 @@ export default {
   methods: {
     getFixed() {
         if (this.isFixed === true && this.once === true ) {
-          document.querySelector('.content-header-wrapper').style.height = this.height + "px";
+          document.querySelector('.content-header-wrapper').style.height = this.height + 60 + "px";
           this.once = false; //定位高度只需执行一次
         }
     },
@@ -57,6 +57,7 @@ export default {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid #d2d3d4;
   padding: 12px 0;
+  margin-top: 60px;
 }
 
 .header-container {
@@ -77,7 +78,8 @@ export default {
 
 .head-fixed.content-header {
   position: fixed;
-  top: 0;
+  top: 60px;
   z-index: 999;
+  margin-top: 0;
 }
 </style>

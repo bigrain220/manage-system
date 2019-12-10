@@ -36,7 +36,7 @@
           <el-table-column prop="amount" label="浏览量(pv)" align="center" sortable="custom" ref="sort">
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
       </div>
     </div>
   </div>
@@ -66,6 +66,7 @@ export default {
       this.$store.commit("setDateChosed", params);
       this.dateCur = this.$store.state.dateChosed;
       this.order="pv,desc";
+      this.currentPage=1;
       this.getTableData();
       this.$refs.sort.columnConfig.order = '';
     },

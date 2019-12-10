@@ -5,6 +5,7 @@
       <!-- <transition name="el-fade-in" mode="out-in" appear> -->
         <router-view></router-view>
       <!-- </transition> -->
+      <to-top></to-top>
     </div>
 
   </div>
@@ -13,7 +14,7 @@
 import leftNav from "./leftNav.vue";
 export default {
   name: "Home",
-  components: {  leftNav },
+  components: {  leftNav,toTop:()=>import("./toTop")},
   methods: {},
 
 };

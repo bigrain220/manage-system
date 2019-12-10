@@ -32,7 +32,18 @@
         <h3 class="title">趋势图</h3>
         <div id="flowChart" style="width:100%;height:400px;background:#fff;" v-loading="loading.echarts"></div>
         <div class="table-title"></div>
-        <el-table :data="tableData" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort">
+        <el-table :data="tableData" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort" v-if="formatSelected==='0'" key="0">
+          <el-table-column label="序号" type="index" width="80">
+          </el-table-column>
+          <el-table-column prop="date" label="时间" sortable="custom" ref="dateSort">
+          </el-table-column>
+          <el-table-column label="" align="center">
+          </el-table-column>
+          <el-table-column prop="amount" label="浏览量(pv)" align="center" sortable="custom" ref="amountSort">
+          </el-table-column>
+        </el-table>
+        <div v-if="formatSelected==='0'" style="height:56px;"></div>
+        <el-table :data="tableData" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort" v-if="formatSelected==='1'" key="1">
           <el-table-column label="序号" width="80">
             <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *size + 1}} </span></template>
           </el-table-column>
@@ -43,7 +54,7 @@
           <el-table-column prop="amount" label="浏览量(pv)" align="center" sortable="custom" ref="amountSort">
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
+        <el-pagination background v-if="formatSelected==='1'" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
       </div>
     </div>
   </div>
@@ -58,7 +69,7 @@ import Header from "../common/header";
 import API from "../../api/api";
 export default {
   name: "flow",
-  components: { Header },
+  components: { Header},
   data() {
     return {
       title: "流量分析",
@@ -84,10 +95,11 @@ export default {
       this.$store.commit("setDateChosed", params);
       this.dateCur = this.$store.state.dateChosed;
       this.getFlowData();
-      this.order="tm,desc";
+      this.order = "tm,desc";
+      this.currentPage = 1;
       this.getTableData();
-      this.$refs.dateSort.columnConfig.order = '';
-      this.$refs.amountSort.columnConfig.order = '';
+      this.$refs.dateSort.columnConfig.order = "";
+      this.$refs.amountSort.columnConfig.order = "";
     },
     choseFormat(params) {
       this.formatSelected = params;
@@ -141,7 +153,7 @@ export default {
           bottom: 0,
           itemWidth: 4,
           itemHeight: 10,
-          selectedMode:false,//取消图例上的点击事件
+          selectedMode: false, //取消图例上的点击事件
           textStyle: {
             padding: [0, 0, 0, 12]
           },
@@ -261,14 +273,23 @@ export default {
     //table
     getTableData() {
       this.loading.table = true;
-      var params = {
-        method: "a",
-        page: this.currentPage,
-        rows: this.size,
-        date: this.dateCur,
-        format: this.formatSelected,
-        order: this.order
-      };
+      if (this.formatSelected === "0") {
+        var params = {
+          method: "a",
+          date: this.dateCur,
+          format: this.formatSelected,
+          order: this.order
+        };
+      } else {
+        var params = {
+          method: "a",
+          page: this.currentPage,
+          rows: this.size,
+          date: this.dateCur,
+          format: this.formatSelected,
+          order: this.order
+        };
+      }
       API.trendTime(params).then(rs => {
         console.log(rs);
         this.loading.table = false;

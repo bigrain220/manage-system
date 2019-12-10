@@ -24,7 +24,7 @@
       <el-table-column label="价格(币)" prop="price" width="160">
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 50, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="true"></el-pagination>
+    <el-pagination  background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 50, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="true"></el-pagination>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="allDirected" size="mini">全部投放</el-button>
       <el-button type="primary" @click="selectedDirected" size="mini">选中投放</el-button>

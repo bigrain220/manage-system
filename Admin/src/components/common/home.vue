@@ -1,5 +1,6 @@
 <template>
   <div id="main">
+    <Top></Top>
     <leftNav></leftNav>
     <div class="content" id="content">
       <transition name="el-fade-in" mode="out-in" appear>
@@ -11,9 +12,10 @@
 </template>
 <script>
 import leftNav from "./leftNav.vue";
+import Top from "./top.vue";
 export default {
   name: "Home",
-  components: {  leftNav },
+  components: {  leftNav ,Top},
   methods: {},
 
 };

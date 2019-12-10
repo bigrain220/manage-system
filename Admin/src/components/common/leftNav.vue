@@ -34,7 +34,7 @@ export default {
 			},
 			getWidth(flag){
 				if(flag == true){//影藏
-					document.getElementById('radioGroup').style.backgroundColor = '#f2f3f4';
+          document.getElementById('radioGroup').style.backgroundColor = '#f2f3f4';
 					this.startAnimation(flag, 64);
 				}else{
 					this.startAnimation(flag, 200);
@@ -93,7 +93,7 @@ export default {
   display: block;
   position: fixed;
   left: 0;
-  top: 0px;
+  top: 60px;
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;

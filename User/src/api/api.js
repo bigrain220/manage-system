@@ -40,13 +40,9 @@ axios.defaults.withCredentials = true; //用axios发送post请求自动set cooki
 //     return Promise.reject(error);
 //   });
 
-
 export default {
   login: params => {
     return axios.post('/login', qs.stringify(params)).then(rs => rs.data).catch(err => err);
-  },
-  loginOut: params => {
-    return axios.post('/logout', qs.stringify(params)).then(rs => rs.data).catch(err => err);
   },
   start: params => {
     return axios.post('/overview/start', qs.stringify(params)).then(res => res.data).catch(err => err);

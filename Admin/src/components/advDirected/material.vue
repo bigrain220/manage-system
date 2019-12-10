@@ -32,20 +32,20 @@
           </el-table-column>
           <el-table-column label="名称" prop="name" width="180" align="center">
           </el-table-column>
-          <el-table-column label="物料" align="center" min-width="230">
+          <el-table-column label="物料" align="center" min-width="270">
             <template slot-scope="scope">
               <el-image lazy :src=item.img_url class="img-list" :preview-src-list="srcList" v-for="(item,index) in JSON.parse(scope.row.imgs)" :key="index" @click="imgClick(scope.row.imgs,index)"></el-image>
             </template>
           </el-table-column>
           <el-table-column label="推广网址" prop="url" align="center" width="200">
             <template slot-scope="scope">
-              <a target="_blank" :href="scope.row.url">{{scope.row.url}}</a>
+              <a target="_blank" :href="scope.row.url" :title="scope.row.url">{{scope.row.url | urlFilter}}</a>
             </template>
           </el-table-column>
           <el-table-column label="更新时间" width="180" align="center">
             <template slot-scope="scope">{{ scope.row.modify_time|timeFilter }}</template>
           </el-table-column>
-             <el-table-column label="状态" width="80" align="center">
+          <el-table-column label="状态" width="80" align="center">
             <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="160">
@@ -62,6 +62,7 @@
           <el-button type="warning" size="mini" @click="batchNoPass">批量拒绝</el-button>
         </div>
       </div>
+      <div v-if="btnFlag" class="go-top el-icon-caret-top" @click="backTop"></div>
     </div>
   </div>
 </template>
@@ -88,7 +89,8 @@ export default {
       multipleSelection: [],
       srcList: [],
       tableData: [],
-      checked: false
+      checked: false,
+      btnFlag: false
     };
   },
   methods: {
@@ -158,18 +160,19 @@ export default {
       this.saveEvent(params);
     },
     noPassClick(id) {
-       this.$prompt('请输入拒绝理由', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-        }).then(({ value }) => {
-            var params = {
-              ids: id,
-              status: 3,
-              comment:value,
-            };
-           this.saveEvent(params);
-        }).catch(() => {   
-        });
+      this.$prompt("请输入拒绝理由", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(({ value }) => {
+          var params = {
+            ids: id,
+            status: 3,
+            comment: value
+          };
+          this.saveEvent(params);
+        })
+        .catch(() => {});
     },
     checkClick() {
       if (this.checked) {
@@ -179,18 +182,26 @@ export default {
       }
     },
     batchPass() {
-      var params = {
-        ids: this.multipleSelection.join(","),
-        status: 2
-      };
-      this.saveEvent(params);
+      if (this.multipleSelection.length === 0) {
+        this.$message.warning("未选中数据");
+      } else {
+        var params = {
+          ids: this.multipleSelection.join(","),
+          status: 2
+        };
+        this.saveEvent(params);
+      }
     },
     batchNoPass() {
-      var params = {
-        ids: this.multipleSelection.join(","),
-        status: 3
-      };
-      this.saveEvent(params);
+      if (this.multipleSelection.length === 0) {
+        this.$message.warning("未选中数据");
+      } else {
+        var params = {
+          ids: this.multipleSelection.join(","),
+          status: 3
+        };
+        this.saveEvent(params);
+      }
     },
     toggleSelection(params) {
       if (params) {
@@ -221,12 +232,6 @@ export default {
         // console.log(rs)
         this.total = rs.total;
         this.tableData = rs.rows;
-        // this.tableData.map((item,index)=>{
-        //   if(item.url.length>26){
-
-        //   }
-        //   console.log(item.url,item.url.length)
-        // })
       });
     },
     //判断有没有滚动条
@@ -235,12 +240,34 @@ export default {
         document.body.scrollHeight >
         (window.innerHeight || document.documentElement.clientHeight)
       );
-    }
+    },
+    backTop() {
+      const that = this;
+      let timer = setInterval(() => {
+        let ispeed = Math.floor(-that.scrollTop / 5);
+        document.documentElement.scrollTop =
+          document.documentElement.scrollTop + ispeed;
+        if (that.scrollTop === 0) {
+          clearInterval(timer);
+        }
+      }, 16);
+    },
+    scrollToTop() {
+      const that = this;
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      that.scrollTop = scrollTop;
+      if (that.scrollTop > 140) {
+      	that.btnFlag = true;
+      } else {
+      	that.btnFlag = false;
+      }
+    },
   },
   created() {
     this.getMaterialList({ page: this.currentPage, rows: this.size });
   },
   mounted() {
+    window.addEventListener("scroll", this.scrollToTop);
     window.addEventListener("mousemove", function() {
       if (document.querySelector(".el-image-viewer__wrapper")) {
       } else {
@@ -250,7 +277,7 @@ export default {
     });
   },
   beforeDestory() {
-    window.removeEventListener("mousemove");
+    window.removeEventListener("scroll", this.scrollToTop);
   },
   filters: {
     statusFilter: function(value) {
@@ -268,6 +295,17 @@ export default {
           return value;
           break;
       }
+    },
+    urlFilter: function(value) {
+      var result = "";
+      var len = value.length - 22;
+      if (len > 0) {
+        var str = value.slice(15, 15 + len);
+        result = value.replace(str, "···");
+      } else {
+        result = value;
+      }
+      return result;
     }
   }
 };
@@ -301,23 +339,41 @@ export default {
     margin-right: 2px;
     cursor: pointer;
   }
-.img-list:nth-child(1) {
-  width: 184px;
+  .img-list:nth-child(1) {
+    width: 184px;
+  }
+  .img-list:nth-child(2) {
+    width: 18px;
+  }
+  .img-list:nth-child(3),
+  .img-list:nth-child(4),
+  .img-list:nth-child(5),
+  .img-list:nth-child(6),
+  .img-list:nth-child(7),
+  .img-list:nth-child(8) {
+    width: 32px;
+  }
+  .img-list:nth-child(9) {
+    width: 242px;
+  }
 }
-.img-list:nth-child(2) {
-  width: 18px;
+.go-top {
+  position: fixed;
+  right: 20px;
+  bottom: 40px;
+  cursor: pointer;
+  font-size: 22px;
+  background-color: #fff;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  color: #409eff;
+  text-align: center;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
 }
-.img-list:nth-child(3),
-.img-list:nth-child(4),
-.img-list:nth-child(5),
-.img-list:nth-child(6),
-.img-list:nth-child(7),
-.img-list:nth-child(8) {
-  width: 32px;
-}
-.img-list:nth-child(9) {
-  width: 242px;
-}
+.go-top:hover {
+  background: rgba(0, 0, 0, 0.12);
 }
 </style>
 <style lang="scss">
@@ -335,6 +391,8 @@ export default {
     width: 100px;
   }
 }
-.el-message-box{width: 40%;}
+.el-message-box {
+  width: 40%;
+}
 </style>
 

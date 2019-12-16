@@ -3,35 +3,38 @@
     <Header :title="title"></Header>
     <div class="content-box">
       <div class="order-box">
-        <el-form :inline="true" :model="searchForm" class="search-form" label-width="60px" size="medium">
-          <el-form-item label="订单号:">
+        <el-form :inline="true" :model="searchForm" class="search-form" size="medium">
+          <el-form-item label="订单号:" label-width="60px">
             <el-input v-model="searchForm.order" :maxlength="30" placeholder="请输入订单号" clearable style="width:230px;"></el-input>
           </el-form-item>
-          <el-form-item label="状态:">
-            <el-select v-model="searchForm.status" placeholder="请选择状态" style="width:140px;">
+          <el-form-item label="类型:" label-width="50px">
+            <el-select v-model="searchForm.tid" placeholder="请选择类型" style="width:120px;">
               <el-option label="全部" value=""></el-option>
-              <!-- <el-option label="处理" :value="0"></el-option> -->
-              <el-option label="待付" :value="1"></el-option>
-              <el-option label="已付" :value="2"></el-option>
-              <el-option label="退款" :value="3"></el-option>
+              <el-option label="投放" :value="1"></el-option>
+              <el-option label="退款" :value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态:" label-width="50px">
+            <el-select v-model="searchForm.status" placeholder="请选择状态" style="width:120px;">
+              <el-option label="全部" value=""></el-option>
+              <el-option label="待付款" :value="1"></el-option>
+              <el-option label="已完成" :value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" @click="search(true)">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="search(true)" style="margin-left:20px;">查询</el-button>
             <el-button type="success" @click="resetSearch">重置</el-button>
           </el-form-item>
         </el-form>
         <el-table :data="tableData" style="width: 100%;" stripe>
           <el-table-column label="订单号" prop="order_no" width="240">
           </el-table-column>
-          <el-table-column label="广告ID" prop="mid">
-          </el-table-column>
-          <el-table-column label="天数">
+          <el-table-column label="类型">
             <template slot-scope="scope">
-              <span>{{scope.row.day}} </span>天
+              <span v-if="scope.row.tid==1">投放</span>
+              <span v-else-if="scope.row.tid==2">退款</span>
+              <span v-else>{{scope.row.tid}}</span>
             </template>
-          </el-table-column>
-          <el-table-column label="总页面" prop="num">
           </el-table-column>
           <el-table-column label="币种" prop="cid">
             <template slot-scope="scope">
@@ -45,18 +48,18 @@
               <span>{{scope.row.price}} </span>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" width="180">
+           <el-table-column label="创建时间">
             <template slot-scope="scope">
               <span>{{scope.row.create_time | getLocalTime}} </span>
             </template>
           </el-table-column>
-          <el-table-column label="状态" align="center">
+          <el-table-column label="备注" prop="comment">
+          </el-table-column>
+          <el-table-column label="状态" align="center" width="120">
             <template slot-scope="scope">
               <el-tag :type="scope.row.status==1?'':scope.row.status==2?'success':'danger'">{{ scope.row.status|statusFilter }}</el-tag>
               <!-- <span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span> -->
             </template>
-          </el-table-column>
-          <el-table-column label="备注" prop="comment" width="220">
           </el-table-column>
         </el-table>
         <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 50,100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="true"></el-pagination>
@@ -77,6 +80,7 @@ export default {
       title: "我的订单",
       searchForm: {
         order: "",
+        tid: "",
         status: ""
       },
       tableData: [],
@@ -95,6 +99,7 @@ export default {
       this.searchForm.status !== ""
         ? (params.status = this.searchForm.status)
         : "";
+      this.searchForm.tid !== "" ? (params.tid = this.searchForm.tid) : "";
       params.page = this.currentPage;
       params.rows = this.size;
       console.log(params);
@@ -103,6 +108,7 @@ export default {
     resetSearch() {
       this.searchForm = {
         order: "",
+        tid: "",
         status: ""
       };
       this.currentPage = 1;
@@ -132,13 +138,10 @@ export default {
     statusFilter: function(value) {
       switch (value) {
         case 1:
-          return "待付";
+          return "待付款";
           break;
         case 2:
-          return "已付";
-          break;
-        case 3:
-          return "退款";
+          return "已完成";
           break;
         default:
           return value;

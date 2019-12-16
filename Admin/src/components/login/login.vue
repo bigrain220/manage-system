@@ -1,6 +1,6 @@
 <template>
   <div class="login-box">
-    <h3 class="title">云盟用户后台登录</h3>
+    <h3 class="title">云盟管理后台登录</h3>
     <el-form :model="loginForm" ref="loginForm" :rules="ruleForm" class="login-container">
       <el-form-item prop="username">
         <el-input type="text" prefix-icon="iconfont iconzhanghao" v-model="loginForm.username" placeholder="用户名" auto-complete="on"></el-input>
@@ -60,7 +60,7 @@ export default {
                 console.log(rs, "loginres");
                 if (rs.code === 1) {
                   // localStorage.setItem("yunmeng_auth", this.loginForm.username);
-                  this.$router.push({ path: "/user/index" });
+                  this.$router.push({ path: "/admin/index" });
                   this.$message.success("登录成功！");
                 } else if (rs.code === 0) {
                   this.$message.error("用户名或密码出错！");
@@ -80,13 +80,6 @@ export default {
         }
       });
     },
-    // logOut() {
-    //   API.logOut({}).then(rs => {
-    //     if (rs) {
-    //       this.$message.warning("已退出原有账号，请重新登录");
-    //     }
-    //   });
-    // },
     init() {
       var that = this;
       var nc_scene = "nc_login";
@@ -119,8 +112,8 @@ export default {
     }
   },
   mounted() {
-    if (utils.getCookie("auth")) {
-      this.$router.push({ path: "/user/index" });
+    if (utils.getCookie("ad_auth")) {
+      this.$router.push({ path: "/admin/index" });
     }
     this.init();
   }

@@ -7,17 +7,9 @@
           <el-form-item label="物料:">
             <el-select v-model="searchForm.mid" placeholder="">
               <el-option label="全部" value=""></el-option>
-              <el-option :label="item.name" :value="item.id" v-for="(item,index) in searchMaterial" :key="index"></el-option>
+              <el-option :label="item.name" :value="item.id" v-for="(item,index) in AllMaterial" :key="index"></el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="状态:">
-            <el-select v-model="searchForm.status" placeholder="">
-              <el-option label="全部" :value="0"></el-option>
-              <el-option label="待投放" :value="1"></el-option>
-              <el-option label="投放中" :value="2"></el-option>
-              <el-option label="已过期" :value="3"></el-option>
-            </el-select>
-          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="search(true)">查询</el-button>
             <el-button type="success" @click="resetSearch">重置</el-button>
@@ -39,11 +31,13 @@
           </el-table-column>
           <el-table-column label="物料" align="center" class-name="select-column" min-width="160">
             <template slot-scope="scope">
-              <el-select placeholder="选择物料" size="mini" v-model="scope.row.mid" v-if="scope.row.id == styleControl.selectID" @change="mediaMidChange(scope.row)">
-                <el-option :label="item.name" :value="item.id" v-for="(item,index) in searchMaterial" :key="index"></el-option>
-                <!-- <el-option :value="1" label="南方网通"></el-option> -->
+              <!-- <el-select placeholder="选择物料" size="mini" v-model="scope.row.mid" v-if="scope.row.id == styleControl.selectID" @change="mediaMidChange(scope.row)">
+                <el-option :label="item.name" :value="item.id" v-for="(item,index) in passMaterial" :key="index"></el-option>
+              </el-select> -->
+              <el-select placeholder="选择物料" size="mini" v-model="tem_material.mid" v-if="scope.row.id == styleControl.selectID" @change="mediaMidChange(scope.row)">
+                <el-option :label="item.name" :value="item.id" v-for="(item,index) in passMaterial" :key="index"></el-option>
               </el-select>
-              <span class="mid-text" @click="midClick($event)" :data-id="scope.row.id" v-else>{{scope.row.mid | selectFilter}}</span>
+              <span class="mid-text" @click="midClick($event)" :data-id="scope.row.id" v-else v-text="materiaText(scope.row.mid)"></span>
             </template>
           </el-table-column>
           <el-table-column label="天数" align="center" class-name="select-column" min-width="160">
@@ -58,9 +52,6 @@
               <span class="day-text" @click="dayClick($event)" :data-id="scope.row.id" v-else>{{scope.row.day}} 天</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="状态" align="center">
-            <template slot-scope="scope"><span :class="[scope.row.status==1?'status-going':scope.row.status==2?'status-over':'']">{{ scope.row.status | statusFilter}}</span></template>
-          </el-table-column> -->
           <el-table-column label="" align="center">
           </el-table-column>
           <el-table-column label="操作" width="300" align="center">
@@ -84,7 +75,7 @@
         </el-form-item>
         <el-form-item label="物料：" prop="mid">
           <el-select v-model="newMediaForm.mid" placeholder="选择物料">
-            <el-option :label="item.name" :value="item.id" v-for="(item,index) in searchMaterial" :key="index"></el-option>
+            <el-option :label="item.name" :value="item.id" v-for="(item,index) in passMaterial" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="天数：" prop="day">
@@ -118,7 +109,12 @@ export default {
   data() {
     return {
       title: "媒体广告",
-      searchMaterial: [],
+      AllMaterial:[],
+      passMaterial: [],
+      tem_material:{
+        id:"",
+        mid:""
+      },
       searchForm: {
         mid: ""
       },
@@ -133,7 +129,8 @@ export default {
       tableData: [],
       directedObj: {
         directedID: null,
-        directedTitle: ""
+        directedTitle: "",
+        directedDays:null
       },
       newMediaForm: { name: "", mid: "", day: "" },
       styleControl: {
@@ -180,7 +177,10 @@ export default {
       this.loading = true;
       //获取物料信息
       API.materialGet({}).then(rs => {
-        this.searchMaterial = rs;
+        this.AllMaterial = rs;
+      });
+      API.materialGet({"status": 2}).then(rs => {
+        this.passMaterial = rs;
       });
       API.mediaList(params).then(rs => {
         // console.log(rs)
@@ -188,6 +188,15 @@ export default {
         this.total = rs.total;
         this.tableData = rs.rows;
       });
+    },
+    materiaText(id){
+      var name=""
+       this.AllMaterial.map(item=>{
+        if(item.id ==id){
+          name = item.name;
+        }
+      });
+      return name;
     },
     mediaNameFocus(e) {
       this.styleControl.inputID = e.target.getAttribute("data-id");
@@ -212,7 +221,9 @@ export default {
         };
       }
       API.mediaEdit(params).then(rs => {
-        if (rs.code !== 1) {
+        if(rs.msg ==="ILLEGAL_ACCESS_DENIED"){
+           this.$message.error("修改失败: 演示模式，拒绝操作!");
+        }else if (rs.code !== 1) {
           this.$message.error("修改失败" + rs.msg);
         }
       });
@@ -230,12 +241,16 @@ export default {
       }
     },
     mediaMidChange(rows) {
-      this.editMedia(rows, "mid");
+      this.tem_material.id=rows.id;
+      rows.mid = this.tem_material.mid;
+      this.editMedia(this.tem_material, "mid");
     },
     mediaDayChange(rows) {
       this.editMedia(rows, "day");
     },
     midClick(e) {
+      this.tem_material.id="";
+      this.tem_material.mid="";
       this.styleControl.selectID = e.target.getAttribute("data-id");
     },
     dayClick(e) {
@@ -249,6 +264,7 @@ export default {
     directedClick(params) {
       this.directedObj.directedID = params.id;
       this.directedObj.directedTitle = params.name;
+      this.directedObj.directedDays = params.day;
       this.dialogVisible.directedMediadialogVisible = true;
     },
     redirectedClick(params) {
@@ -262,6 +278,12 @@ export default {
             if (rs.code === 1) {
               this.$message.success("重投成功");
               this.search();
+            }else if(rs.msg==="ILLEGAL_REPUTIN_EMPTY" || rs.msg==="ILLEGAL_SIZE_LIMIT"){
+              this.$message.error("重投失败：没有可投放的页面!");
+            }else if(rs.msg ==="ILLEGAL_ACCESS_DENIED"){
+               this.$message.error("重投失败: 演示模式，拒绝操作!");
+            }else if(rs.msg==="ILLEGAL_MATERIAL_STATUS"){
+              this.$message.error("重投失败：物料状态需要通过审核!");
             } else {
               this.$message.error("重投失败：" + rs.msg);
             }
@@ -287,8 +309,12 @@ export default {
               let currentPage = this.currentPage > totalPage ? totalPage : this.currentPage;
               this.currentPage = currentPage < 1 ? 1 : currentPage;
               this.search();
+            }else if(rs.msg==="ILLEGAL_MEDIA_IS_USED"){
+              this.$message.error("删除失败: 广告使用中无法删除");
+            }else if(rs.msg==="ILLEGAL_ACCESS_DENIED"){
+              this.$message.error("删除失败: 演示模式，拒绝操作");
             } else {
-              this.$message.error("删除失败，" + rs.msg);
+              this.$message.error("删除失败:" + rs.msg);
             }
           });
         })
@@ -308,6 +334,12 @@ export default {
                 callback: action => {
                   this.resetSearch();
                 }
+              });
+            } else if(rs.msg==="ILLEGAL_ACCESS_DENIED"){
+              this.$alert("创建失败：演示模式，拒绝操作", "创建广告", {
+                type: "error",
+                confirmButtonText: "确定",
+                callback: action => {}
               });
             } else {
               this.$alert("创建失败：" + rs.msg, "创建广告", {
@@ -362,21 +394,7 @@ export default {
       }
     };
   },
-  filters: {
-    selectFilter: function(value) {
-      switch (value) {
-        case 1:
-          return "南方网通";
-          break;
-        case 10:
-          return "zzztest";
-          break;
-        default:
-          return "选择物料";
-          break;
-      }
-    }
-  }
+ 
 };
 </script>
 

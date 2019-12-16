@@ -6,13 +6,16 @@ import {
   MessageBox
 } from 'element-ui'
 
-if (utils.changHost() == 'offLine') {
-  var base = 'http://ads1.g3user.com'; //测试环境
+
+if (process.env.NODE_ENV === "development") {
+  var base = 'http://ads1.g3user.com';
 } else {
-  var base = '//' + document.domain; //线上
+  var base = '//' + document.domain;
 }
+
+
 let baseUrl = base + '/api';
-// utils.setCookie('auth','LiveWSPFT16631328=c807865eb09b4c56860a9e20c76561ad',60)
+
 axios.defaults.timeout = 6000;
 axios.defaults.baseURL = baseUrl;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -20,29 +23,51 @@ axios.defaults.headers.post['Accept'] = 'text/html,application/xhtml+xml,applica
 axios.defaults.withCredentials = true; //用axios发送post请求自动set cookie
 
 
-// axios.interceptors.response.use(function (response) {
-//     // 对响应数据做点什么
-//     // console.log("response66",response)
-//     if(response.config.url.indexOf('/api/sessions')>0){
-//         return response;
-//     }else if(utils.getCookie("session_val")==""){
-//         MessageBox.alert('您已下线，请重新登录', '下线提示', {
-//             confirmButtonText: '确定',
-//             callback: action => {
-//               router.push({ path:'/index'})
-//             }
-//           });
-//     }else{
-//         return response;
-//     }
-//   }, function (error) {
-//     // 对响应错误做点什么
-//     return Promise.reject(error);
-//   });
+
+
+let isLogin = true; //让弹窗只弹一次；
+// respone拦截器
+axios.interceptors.response.use(
+  response => {
+    // 对响应数据做点什么
+    // console.log(response, 'response')
+    // console.log(utils.getCookie('auth'), 'auth');
+    if (response.config.url == baseUrl + '/login' || response.config.url == baseUrl + '/logout') {
+      isLogin = true;
+      return response;
+    } else if ((response.data != "" && response.data.msg == 'FAILED_LOGIN') || (process.env.NODE_ENV === "production" ? utils.getCookie('auth') == "" : false)) {
+      if (isLogin == true) {
+        isLogin = false;
+        MessageBox.alert('您已下线，请重新登录', '下线提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            router.push({
+              path: '/login'
+            })
+          }
+        });
+      }
+    } else {
+      isLogin = true;
+      return response;
+    }
+  },
+  error => {
+    console.log('err' + error) // for debug
+    return Promise.reject(error)
+  }
+)
+
+
 
 export default {
   login: params => {
     return axios.post('/login', qs.stringify(params)).then(rs => rs.data).catch(err => err);
+  },
+  logOut: params => {
+    return axios.get('/logout', {
+      "params": params
+    }).then(res => res.data).catch(err => err);
   },
   start: params => {
     return axios.post('/overview/start', qs.stringify(params)).then(res => res.data).catch(err => err);
@@ -83,13 +108,24 @@ export default {
     return axios.post('/space/search', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   spacePutin: params => {
-    return axios.post('/space/putin', qs.stringify(params),{timeout: 30000}).then(res => res.data).catch(err => err);
+    return axios.post('/space/putin', qs.stringify(params), {
+      timeout: 30000
+    }).then(res => res.data).catch(err => err);
   },
   spaceReputin: params => {
-    return axios.post('/space/reputin', qs.stringify(params),{timeout: 30000}).then(res => res.data).catch(err => err);
+    return axios.post('/space/reputin', qs.stringify(params), {
+      timeout: 30000
+    }).then(res => res.data).catch(err => err);
   },
   spaceList: params => {
-    return axios.post('/space/list', qs.stringify(params),{timeout: 30000}).then(res => res.data).catch(err => err);
+    return axios.post('/space/list', qs.stringify(params), {
+      timeout: 30000
+    }).then(res => res.data).catch(err => err);
+  },
+  spaceRefund: params => {
+    return axios.post('/space/refund', qs.stringify(params), {
+      timeout: 30000
+    }).then(res => res.data).catch(err => err);
   },
   textGet: params => {
     return axios.post('/text/get', qs.stringify(params)).then(res => res.data).catch(err => err);

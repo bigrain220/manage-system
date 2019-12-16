@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-upload action="123" list-type="picture-card" :accept="'image/*'" :multiple="false" ref="addupload" :on-change="addhandlefileChange" :show-file-list="true" :auto-upload="false" :limit="1" :on-exceed="handleExceed" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+    <el-upload action="123" list-type="picture-card" :accept="'image/*'" :multiple="false" ref="addupload" :on-change="addhandlefileChange" :show-file-list="true" :auto-upload="false"  :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
       <i class="el-icon-plus"></i>
     </el-upload>
     <div style="height:24px;line-height:24px;font-size:14px;" v-show="name"><span style="font-size:12px;font-weight:bold;color:#333;">文件名：</span>{{name}}</div>
@@ -29,19 +29,13 @@ export default {
     };
   },
   methods: {
-    getPreWH(URL) {
-     var width=null;var height=null;
-      let image = new Image();
-      image.onload = function() {
-         width = image.width;
-         height = image.height;
-      };
-      image.src = URL;
-      console.log(width,height)
-    },
     addhandlefileChange(file, fileList) {
       //选择完文件后的状态
-      console.log("change", file);
+      // console.log(fileList,"change", file);
+      if(fileList.length>1){
+         fileList.splice(0,1);
+      }
+      // console.log(fileList,"change2", file);
       //判断上传文件类型
       if (file.raw.type.indexOf("image/") < 0) {
         var isImage = false;
@@ -64,9 +58,6 @@ export default {
         this.name = file.name.split(".")[0];
         // this.$refs.hahaForm.submit();
       }
-    },
-    handleExceed() {
-      this.$message.error("一次只能选一个图片，请先删除之前的图片");
     },
     handleRemove() {
       this.name = "";

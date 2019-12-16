@@ -5,6 +5,7 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 export default new Router({
+  // mode:"history",
   routes: [{
       path: '/',
       redirect: '/user/index'
@@ -15,8 +16,14 @@ export default new Router({
       component: resolve => require(['@/components/login/login'], resolve)
     },
     {
+      path: '/logout',
+      name: 'logOut',
+      component: resolve => require(['@/components/logOut/logOut'], resolve),
+    },
+    {
       path: '/user',
       component: resolve => require(['@/components/common/home'], resolve),
+      redirect: '/user/index',
       children: [{
           path: 'index',
           name: 'Material',

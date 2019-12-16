@@ -58,6 +58,7 @@ export default {
   color: #409eff;
   text-align: center;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
+  z-index: 6;
 }
 .go-top:hover {
   background: rgba(0, 0, 0, 0.12);

@@ -1,17 +1,15 @@
 <template>
   <el-dialog :title='"投放列表( "+listDialogProps.title+" )"' :visible.sync="isShow" @closed="listMediadialogClose" class="directed-list-dialog" :close-on-click-modal="false">
-    <el-form :inline="true" :model="listSearchForm" class="list-search-form" label-width="60px" size="mini">
+    <!-- <el-form :inline="true" :model="listSearchForm" class="list-search-form" label-width="60px" size="mini">
       <el-form-item label="状态:">
         <el-select v-model="listSearchForm.status" placeholder="" style="width:100px;">
           <el-option label="全部" value=""></el-option>
-          <el-option label="处理" :value="0"></el-option>
-          <el-option label="待付" :value="1"></el-option>
-          <el-option label="待投" :value="2"></el-option>
-          <el-option label="已投" :value="3"></el-option>
-          <el-option label="队列" :value="4"></el-option>
-          <el-option label="完成" :value="5"></el-option>
-          <el-option label="失败" :value="6"></el-option>
-          <el-option label="退款" :value="7"></el-option>
+          <el-option label="待付款" :value="1"></el-option>
+          <el-option label="队列中" :value="2"></el-option>
+          <el-option label="投放中" :value="3"></el-option>
+          <el-option label="已完成" :value="4"></el-option>
+          <el-option label="退款中" :value="5"></el-option>
+          <el-option label="已退款" :value="6"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -20,48 +18,68 @@
       <el-form-item>
         <el-button @click="listReset">重置</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
+    <el-tabs v-model="listSearchForm.status" @tab-click="handleClick" >
+      <el-tab-pane label="全部" name="all"></el-tab-pane>
+      <el-tab-pane label="待付款" name="1"></el-tab-pane>
+      <el-tab-pane label="队列中" name="2"></el-tab-pane>
+      <el-tab-pane label="投放中" name="3"></el-tab-pane>
+      <el-tab-pane label="已完成" name="4"></el-tab-pane>
+      <el-tab-pane label="退款中" name="5"></el-tab-pane>
+      <el-tab-pane label="已退款" name="6"></el-tab-pane>
+    </el-tabs>
+
     <el-table ref="multipleTable" :data="tableData" style="width: 100%;max-height:60vh;overflow-y:auto;" @selection-change="handleSelectionChange" border stripe size="mini">
-      <el-table-column type="selection" width="50">
+      <el-table-column type="selection" width="50" :selectable="checkSelectable">
       </el-table-column>
       <el-table-column label="标题" min-width="150">
         <template slot-scope="scope">
           <a :href="'//'+scope.row.page" target="_blank" :title="scope.row.page">{{scope.row.title}}</a>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="日均展现" prop="pv" width="80" align="center">
-      </el-table-column> -->
-      <el-table-column label="价格(币)" prop="price" width="100" align="center">
+      <el-table-column label="价格(币/天)" prop="price" width="100" align="center"></el-table-column>
+      <el-table-column label="退款(币)" width="100" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.refund!=0.00"> {{scope.row.refund}}</span>
+          <span v-if="scope.row.refund==0.00"> -- </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="总计(币)" prop="total" width="100" align="center"></el-table-column>
+      <el-table-column label="创建时间" align="center" width="150">
+        <template slot-scope="scope">
+          <span v-if="scope.row.create_time!==0"> {{scope.row.create_time | getLocalTime}}</span>
+          <span v-if="scope.row.create_time===0"> -- </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="过期时间" align="center" width="150">
+        <template slot-scope="scope">
+          <span v-if="scope.row.expire_time!==0"> {{scope.row.expire_time | getLocalTime}}</span>
+          <span v-if="scope.row.expire_time===0"> -- </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" width="160" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.comment!=''"> {{scope.row.comment}}</span>
+          <span v-if="scope.row.comment==''"> -- </span>
+        </template>
       </el-table-column>
       <el-table-column label="状态" width="100" align="center">
         <template slot-scope="scope">
           {{scope.row.status | statusFilter}}
         </template>
       </el-table-column>
-       <el-table-column label="投放过期时间"  align="center" width="150">
-        <template slot-scope="scope">
-          <span v-if="scope.row.expire_time!==0"> {{scope.row.expire_time | getLocalTime}}</span>
-          <span v-if="scope.row.expire_time===0"> -- </span>
-        </template>
-      </el-table-column>
-       <el-table-column label="备注" width="160" align="center">
-          <template slot-scope="scope">
-          <span v-if="scope.row.comment!=''"> {{scope.row.comment}}</span>
-          <span v-if="scope.row.comment==''"> -- </span>
-        </template>
-      </el-table-column>
     </el-table>
-    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 20, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="true"></el-pagination>
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20,50,100]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="false"></el-pagination>
     <div slot="footer" class="dialog-footer">
       <el-button @click="isShow = false" size="small">取 消</el-button>
-      <el-button type="primary" @click="listMediaSubmit" size="small">确 定</el-button>
+      <el-button type="danger" @click="listMediaRefund" size="small">退款</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
 import API from "../../api/api";
-import "../../utils/filters"
+import "../../utils/filters";
 export default {
   name: "directedListDialog",
   props: {
@@ -69,45 +87,70 @@ export default {
   },
   data() {
     return {
+      activeName:"",
       isShow: true,
       listSearchForm: {
-        status: ""
+        status: "all"
       },
       tableData: [],
       multipleSelection: [],
       total: 10,
-      size: 20,
+      size: 10,
       currentPage: 1
     };
   },
   methods: {
+     handleClick(tab, event) {
+        // console.log(tab, event);
+        this.listSearch(true);
+      },
     listSearch(isbtn) {
       if (isbtn === true) {
         this.currentPage = 1;
       }
       var params = {};
       params.mid = this.listDialogProps.id;
-      this.listSearchForm.status !== ""
+      this.listSearchForm.status !== "all"
         ? (params.status = this.listSearchForm.status)
         : "";
       (params.page = this.currentPage),
         (params.rows = this.size),
-        console.log(params);
-      this.getDirectedListData(params);
+        // console.log(params);
+        this.getDirectedListData(params);
     },
     listReset() {
       this.listSearchForm = {
-        status: ""
+        status: "all"
       };
       this.currentPage = 1;
-      this.size = 20;
+      this.size = 10;
       this.listSearch();
     },
     listMediadialogClose() {
       this.isShow = false;
     },
-    listMediaSubmit() {
-      this.isShow = false;
+    listMediaRefund() {
+      if (this.multipleSelection.length == 0) {
+        this.$alert("请先勾选退款项目", "退款", {
+          type: "warning",
+          confirmButtonText: "确定",
+          callback: action => {}
+        });
+      } else {
+        var params = {
+          ids: this.multipleSelection.join(",")
+        };
+        API.spaceRefund(params).then(rs => {
+          if (rs.code === 1) {
+            this.$message.success("退款成功");
+            this.listSearch(true);
+          }else if(rs.msg ==="ILLEGAL_ACCESS_DENIED"){
+            this.$message.error("退款失败: 演示模式，拒绝操作");
+          } else {
+            this.$message.error("退款失败" + rs.msg);
+          }
+        });
+      }
     },
     handleSizeChange(val) {
       this.size = val;
@@ -117,7 +160,17 @@ export default {
       this.currentPage = val;
       this.listSearch();
     },
-    handleSelectionChange() {},
+    handleSelectionChange(val) {
+      // console.log(val);
+      this.multipleSelection = [];
+      val.map((item, index) => {
+        this.multipleSelection.push(item.id);
+      });
+    },
+    checkSelectable(row, index) {
+      // console.log(row,index)
+      return row.status == 3;
+    },
     getDirectedListData(params) {
       API.spaceList(params).then(rs => {
         console.log(rs);
@@ -136,29 +189,23 @@ export default {
   filters: {
     statusFilter: function(value) {
       switch (value) {
-        case 0:
-          return "处理";
-          break;
         case 1:
-          return "待付";
+          return "待付款";
           break;
         case 2:
-          return "待投";
+          return "队列中";
           break;
         case 3:
-          return "已投";
+          return "投放中";
           break;
         case 4:
-          return "队列";
+          return "已完成";
           break;
         case 5:
-          return "完成";
+          return "退款中";
           break;
         case 6:
-          return "失败";
-          break;
-        case 7:
-          return "退款";
+          return "已退款";
           break;
         default:
           return value;
@@ -177,7 +224,7 @@ export default {
 <style lang="scss">
 .directed-list-dialog .el-dialog {
   width: 70%;
-  // margin-top: 5vh!important;
+  margin-top: 10vh !important;
   .el-dialog__title {
     font-size: 14px;
     font-weight: bold;
@@ -185,6 +232,12 @@ export default {
   .el-dialog__body {
     padding-top: 20px;
     padding-bottom: 0px;
+  }
+  .el-tabs__header{
+    margin:0 0 10px;
+  }
+  .el-tabs__nav-wrap::after{
+    height: 2px;
   }
 }
 </style>

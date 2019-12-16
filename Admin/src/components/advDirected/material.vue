@@ -50,8 +50,9 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="160">
             <template slot-scope="scope">
+              <!-- :disabled="scope.row.status ==2?true:false" -->
               <el-button type="primary" size="mini" @click="passClick(scope.row.id)">通过</el-button>
-              <el-button type="warning" size="mini" @click="noPassClick(scope.row.id)">拒绝</el-button>
+              <el-button type="warning" size="mini" @click="refuseClick('single',scope.row.id)">拒绝</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -59,10 +60,12 @@
         <div class="group-btn">
           <el-checkbox v-model="checked" style="margin-right:14px;" @change="checkClick"></el-checkbox>
           <el-button type="primary" size="mini" @click="batchPass">批量通过</el-button>
-          <el-button type="warning" size="mini" @click="batchNoPass">批量拒绝</el-button>
+          <el-button type="warning" size="mini" @click="refuseClick('batch')">批量拒绝</el-button>
         </div>
       </div>
       <div v-if="btnFlag" class="go-top el-icon-caret-top" @click="backTop"></div>
+      <!-- refuseDialog -->
+      <refuse-dialog v-if="dialogVisible.refuseDialog" @refuseEvent="refuseEvent" @mapEvent="mapEvent"></refuse-dialog>
     </div>
   </div>
 </template>
@@ -74,7 +77,7 @@ import "../../utils/filters";
 import Header from "../common/header";
 export default {
   name: "Material",
-  components: { Header },
+  components: { Header, refuseDialog: () => import("../common/refuseDialog") },
   data() {
     return {
       title: "物料列表",
@@ -90,7 +93,15 @@ export default {
       srcList: [],
       tableData: [],
       checked: false,
-      btnFlag: false
+      btnFlag: false,
+      dialogVisible: {
+        refuseDialog: false
+      },
+      refuseParams: {
+        ids: "",
+        status: 3,
+        comment: ""
+      }
     };
   },
   methods: {
@@ -152,27 +163,21 @@ export default {
         this.checked = false;
       }
     },
+    //获取拒绝理由
+    refuseEvent(val) {
+      this.refuseParams.comment = val;
+      // console.log("refuse", this.refuseParams);
+      this.saveEvent(this.refuseParams);
+    },
+    mapEvent(data) {
+      this.dialogVisible.refuseDialog = data;
+    },
     passClick(id) {
       var params = {
         ids: id,
         status: 2
       };
       this.saveEvent(params);
-    },
-    noPassClick(id) {
-      this.$prompt("请输入拒绝理由", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-        .then(({ value }) => {
-          var params = {
-            ids: id,
-            status: 3,
-            comment: value
-          };
-          this.saveEvent(params);
-        })
-        .catch(() => {});
     },
     checkClick() {
       if (this.checked) {
@@ -192,17 +197,6 @@ export default {
         this.saveEvent(params);
       }
     },
-    batchNoPass() {
-      if (this.multipleSelection.length === 0) {
-        this.$message.warning("未选中数据");
-      } else {
-        var params = {
-          ids: this.multipleSelection.join(","),
-          status: 3
-        };
-        this.saveEvent(params);
-      }
-    },
     toggleSelection(params) {
       if (params) {
         this.$refs.multipleTable.clearSelection();
@@ -211,15 +205,23 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+    refuseClick(type, id) {
+      if (type === "single") {
+        this.dialogVisible.refuseDialog = true;
+        this.refuseParams.ids = id;
+      } else if (type === "batch") {
+        if (this.multipleSelection.length === 0) {
+          this.$message.warning("未选中数据");
+        } else {
+          this.dialogVisible.refuseDialog = true;
+          this.refuseParams.ids = this.multipleSelection.join(",");
+        }
+      }
+    },
     saveEvent(params) {
       API.materialSave(params).then(rs => {
         if (rs.code === 1) {
           this.$message.success("修改成功");
-          //  this.$message({
-          //   message: '修改成功',
-          //   type: 'success',
-          //   offset:200
-          // });
           this.search();
         } else {
           this.$message.error("修改失败：" + rs.msg);
@@ -254,30 +256,34 @@ export default {
     },
     scrollToTop() {
       const that = this;
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      let scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
       that.scrollTop = scrollTop;
       if (that.scrollTop > 140) {
-      	that.btnFlag = true;
+        that.btnFlag = true;
       } else {
-      	that.btnFlag = false;
+        that.btnFlag = false;
       }
     },
+    mouseMoveEvent() {
+      if (!document.querySelector(".el-image-viewer__wrapper")) {
+        document.querySelector("body").style.overflow = "";
+        document.querySelector("body").style.marginRight = "0";
+      }
+    }
   },
   created() {
     this.getMaterialList({ page: this.currentPage, rows: this.size });
   },
   mounted() {
     window.addEventListener("scroll", this.scrollToTop);
-    window.addEventListener("mousemove", function() {
-      if (document.querySelector(".el-image-viewer__wrapper")) {
-      } else {
-        document.querySelector("body").style.overflow = "";
-        document.querySelector("body").style.marginRight = "0";
-      }
-    });
+    window.addEventListener("mousemove", this.mouseMoveEvent);
   },
   beforeDestory() {
     window.removeEventListener("scroll", this.scrollToTop);
+    window.removeEventListener("mousemove", this.mouseMoveEvent);
   },
   filters: {
     statusFilter: function(value) {
@@ -371,6 +377,7 @@ export default {
   color: #409eff;
   text-align: center;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
+  z-index: 6;
 }
 .go-top:hover {
   background: rgba(0, 0, 0, 0.12);

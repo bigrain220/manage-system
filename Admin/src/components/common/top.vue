@@ -4,24 +4,25 @@
           <span>广告投放后台</span>
       </div>
     <div class="top-right">
-      <el-dropdown>
-        <span class="el-dropdown-link">下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>1</el-dropdown-item>
-          <el-dropdown-item>2</el-dropdown-item>
-          <el-dropdown-item>3</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+      <el-link type="primary" @click="logout">安全退出</el-link>
     </div>
   </div>
 </template>
 
 <script>
+import API from "../../api/api"
 export default {
   name: "Top",
   data() {
     return {};
+  },
+  methods:{
+    logout(){
+      API.logOut({}).then(rs=>{
+        this.$router.push({path:'/login'});
+        this.$message.warning("已退出,请重新登录")
+      })
+    }
   }
 };
 </script>

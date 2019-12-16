@@ -128,6 +128,11 @@ export default {
                   this.init();
                 }
               });
+            }else if(rs.msg ==="ILLEGAL_ACCESS_DENIED"){
+              this.$alert("保存失败: 演示模式，拒绝操作", "保存", {
+                confirmButtonText: "确定",
+                callback: action => {}
+              });
             } else {
               this.$alert("保存失败" + rs.msg, "保存", {
                 confirmButtonText: "确定",

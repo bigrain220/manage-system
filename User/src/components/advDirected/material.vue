@@ -26,7 +26,10 @@
               <el-image :src=item.img_url class="img-list" :preview-src-list="srcList" v-for="(item,index) in scope.row.imgs" :key="index" @click="imgClick(scope.row.imgs,index)"></el-image>
             </template>
           </el-table-column>
-          <el-table-column label="推广网址" prop="url" align="center" width="320">
+          <el-table-column label="推广网址"  align="center" width="320">
+            <template slot-scope="scope">
+              <a :href="scope.row.url" target="_blank">{{scope.row.url}}</a>
+            </template>
           </el-table-column>
           <el-table-column label="状态" width="120" align="center">
             <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
@@ -283,8 +286,12 @@ export default {
               let currentPage = this.currentPage > totalPage ? totalPage : this.currentPage;
               this.currentPage = currentPage < 1 ? 1 : currentPage;
               this.search();
+            }else if(rs.msg==="ILLEGAL_MATERIAL_IS_USED"){
+               this.$message.error("删除失败: 物料使用中无法删除");
+            }else if(rs.msg ==="ILLEGAL_ACCESS_DENIED"){
+               this.$message.error("删除失败: 演示模式，拒绝操作");
             } else {
-              this.$message.error("删除失败，" + rs.msg);
+              this.$message.error("删除失败: " + rs.msg);
             }
           });
         })
@@ -325,6 +332,14 @@ export default {
           type: "success",
           callback: action => {
             this.search();
+          }
+        });
+      }else if(params.msg ==="ILLEGAL_ACCESS_DENIED"){
+        this.$alert("提交失败: 演示模式，拒绝操作", "提交物料", {
+          confirmButtonText: "确定",
+          type: "error",
+          callback: action => {
+            // this.search();
           }
         });
       } else {
@@ -414,6 +429,7 @@ export default {
           document.querySelector("body").style.marginRight = "0";
         }
       });
+  
   },
   beforeDestory() {
     window.removeEventListener("mousemove");

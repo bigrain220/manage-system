@@ -11,20 +11,36 @@ export default new Router({
       redirect: '/admin/index'
     },
     {
+      path: '/login',
+      name: 'Login',
+      component: resolve => require(['@/components/login/login'], resolve)
+    },
+    {
       path:'/admin',
       component: resolve => require(['@/components/common/home'], resolve),
+      redirect: '/admin/index',
     	children:[
         {
           path: 'index',
           name: 'Material',
-          component:resolve => require(['@/components/advDirected/material'],resolve)
+          component:resolve => require(['@/components/advDirected/material'],resolve),
+          meta: {
+            requireAuth: true
+          }
         },
         {
           path: 'advertiseConfig',
-          component: resolve => require(['@/components/yunmengConfig/advertiseConfig'], resolve),
           name: 'advertiseConfig',
+          component: resolve => require(['@/components/yunmengConfig/advertiseConfig'], resolve),
+          meta: {
+            requireAuth: true
+          }
         },
       ]
     },
+    {
+      path: '*',
+      redirect: '/admin/index'
+    }
   ]
 })

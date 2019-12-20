@@ -62,15 +62,12 @@ axios.interceptors.response.use(
 
 export default {
   login: params => {
-    return axios.post('/login', qs.stringify(params)).then(rs => rs.data).catch(err => err);
+    return axios.post('/login', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   logOut: params => {
     return axios.get('/logout', {
       "params": params
     }).then(res => res.data).catch(err => err);
-  },
-  start: params => {
-    return axios.post('/overview/start', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   //物料
   materialList: params => {
@@ -146,5 +143,17 @@ export default {
   },
   visitPage: params => {
     return axios.post('/visit/page', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  overviewStart: params => {
+    return axios.post('/overview/start', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  overviewTrend: params => {
+    return axios.post('/overview/trend', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  overviewWord: params => {
+    return axios.post('/overview/word', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  overviewPage: params => {
+    return axios.post('/overview/page', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
 }

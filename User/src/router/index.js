@@ -6,9 +6,10 @@ Vue.use(Router)
 
 export default new Router({
   // mode:"history",
-  routes: [{
+  routes: [
+    {
       path: '/',
-      redirect: '/user/index'
+      redirect: '/user/all/index'
     },
     {
       path: '/login',
@@ -21,9 +22,8 @@ export default new Router({
       component: resolve => require(['@/components/logOut/logOut'], resolve),
     },
     {
-      path: '/user',
+      path: '/user/:id',
       component: resolve => require(['@/components/common/home'], resolve),
-      redirect: '/user/index',
       children: [{
           path: 'index',
           name: 'Material',
@@ -57,6 +57,14 @@ export default new Router({
           }
         },
         {
+          path: 'generalization',
+          component: resolve => require(['@/components/Analysis/generalization'], resolve),
+          name: 'generalization',
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
           path: 'flow',
           component: resolve => require(['@/components/Analysis/flow'], resolve),
           name: 'flow',
@@ -82,9 +90,9 @@ export default new Router({
         },
       ]
     },
-    {
-      path: '*',
-      redirect: '/user/index'
-    }
+    // {
+    //   path: '*',
+    //   redirect: '/user/index'
+    // }
   ]
 })

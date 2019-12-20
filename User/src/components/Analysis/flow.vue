@@ -35,11 +35,13 @@
         <el-table :data="tableData" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort" v-if="formatSelected==='0'" key="0">
           <el-table-column label="序号" type="index" width="80">
           </el-table-column>
-          <el-table-column prop="date" label="时间" sortable="custom" ref="dateSort">
+          <el-table-column prop="tm" label="时间" sortable="custom" ref="dateSort">
           </el-table-column>
           <el-table-column label="" align="center">
           </el-table-column>
-          <el-table-column prop="amount" label="浏览量(pv)" align="center" sortable="custom" ref="amountSort">
+          <el-table-column prop="pv" label="浏览量(pv)" align="center" sortable="custom" ref="pvSort" width="200">
+          </el-table-column>
+          <el-table-column prop="cv" label="点击量(cv)" align="center" sortable="custom" ref="cvSort" width="200">
           </el-table-column>
         </el-table>
         <div v-if="formatSelected==='0'" style="height:56px;"></div>
@@ -47,11 +49,13 @@
           <el-table-column label="序号" width="80">
             <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *size + 1}} </span></template>
           </el-table-column>
-          <el-table-column prop="date" label="时间" sortable="custom" ref="dateSort">
+          <el-table-column prop="tm" label="时间" sortable="custom" ref="dateSort">
           </el-table-column>
           <el-table-column label="" align="center">
           </el-table-column>
-          <el-table-column prop="amount" label="浏览量(pv)" align="center" sortable="custom" ref="amountSort">
+          <el-table-column prop="pv" label="浏览量(pv)" align="center" sortable="custom" ref="pvSort" width="200">
+          </el-table-column>
+          <el-table-column prop="cv" label="点击量(cv)" align="center" sortable="custom" ref="cvSort" width="200">
           </el-table-column>
         </el-table>
         <el-pagination background v-if="formatSelected==='1'" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
@@ -69,7 +73,7 @@ import Header from "../common/header";
 import API from "../../api/api";
 export default {
   name: "flow",
-  components: { Header},
+  components: { Header },
   data() {
     return {
       title: "流量分析",
@@ -82,6 +86,7 @@ export default {
       num_data: [], //按时显示时的x轴数据
       x_data: [], //x轴数据
       y_data: [], //y轴数据
+      y_data2: [], //y轴数据
       myChart: "",
       tableData: [],
       order: "tm,desc",
@@ -99,7 +104,8 @@ export default {
       this.currentPage = 1;
       this.getTableData();
       this.$refs.dateSort.columnConfig.order = "";
-      this.$refs.amountSort.columnConfig.order = "";
+      this.$refs.pvSort.columnConfig.order = "";
+      this.$refs.cvSort.columnConfig.order = "";
     },
     choseFormat(params) {
       this.formatSelected = params;
@@ -111,6 +117,7 @@ export default {
       this.loading.echarts = true;
       this.x_data = [];
       this.y_data = [];
+      this.y_data2 = [];
       this.num_data = [];
       var params = {
         method: "f",
@@ -125,6 +132,7 @@ export default {
             res.items[1][i][0] = 0;
           }
           this.y_data.push(res.items[1][i][0]);
+          this.y_data2.push(res.items[1][i][1]);
           this.num_data.push(i);
         }
         this.setEcharts();
@@ -133,6 +141,7 @@ export default {
     },
     initEcharts() {
       this.myChart = $echarts.init(document.getElementById("flowChart"));
+      this.myChart ? this.myChart.clear() : "";
       var option = {
         tooltip: {
           trigger: "axis",
@@ -142,18 +151,18 @@ export default {
             fontSize: "14px"
           },
           extraCssText:
-            "width:180px;height:85px;padding:0;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);"
+            "width:180px;height:110px;padding:0;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);"
         },
         textStyle: {
           color: "#999"
         },
-        color: "rgb(79, 168, 249)",
+        color: ["#4fa8f9", "#6ec71e"],
         legend: {
           left: "center",
           bottom: 0,
           itemWidth: 4,
           itemHeight: 10,
-          selectedMode: false, //取消图例上的点击事件
+          // selectedMode: false, //取消图例上的点击事件
           textStyle: {
             padding: [0, 0, 0, 12]
           },
@@ -163,7 +172,7 @@ export default {
           left: "5%",
           right: "5%"
         },
-        xAxis: [
+        xAxis: 
           {
             type: "category",
             boundaryGap: false,
@@ -174,8 +183,8 @@ export default {
             },
             data: []
           }
-        ],
-        yAxis: [
+        ,
+        yAxis: 
           {
             type: "value",
             axisLine: {
@@ -189,7 +198,7 @@ export default {
               }
             }
           }
-        ],
+        ,
         series: [
           {
             name: "",
@@ -198,8 +207,16 @@ export default {
               color: "rgb(79, 168, 249)",
               opacity: "0.2"
             },
-            lineStyle: {
-              color: "rgb(79, 168, 249)"
+            symbol: "circle",
+            symbolSize: "5",
+            data: []
+          },
+          {
+            name: "",
+            type: "line",
+            areaStyle: {
+              color: "#6ec71e",
+              opacity: "0.2"
             },
             symbol: "circle",
             symbolSize: "5",
@@ -208,6 +225,22 @@ export default {
         ]
       };
       this.myChart.setOption(option);
+      //echarts点击事件
+      this.myChart.on("legendselectchanged", function(params) {
+        var legend_option = this.getOption();
+        var selectTotal = 0;
+        var tem = Object.values(params.selected);
+        for (var j = 0; j < tem.length; j++) {
+          if (tem[j] === true) {
+            selectTotal += 1;
+          }
+        }
+        legend_option.tooltip[0].extraCssText =
+          "width:220px;padding:0;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);height:" +
+          (40 + selectTotal * 35) +
+          "px";
+        this.setOption(legend_option);
+      });
     },
     setEcharts() {
       var that = this;
@@ -221,42 +254,46 @@ export default {
         }
         xData = that.x_data;
       }
-      var name_type = "浏览量(PV)";
-      var arr = [];
-      arr.push(name_type);
+      var arr = ["浏览量(PV)", "点击量(CV)"];
       that.myChart.setOption({
-        xAxis: [
+        xAxis: 
           {
             axisLabel: {
               interval: inter_val
             },
             data: xData
           }
-        ],
+        ,
         tooltip: {
           formatter: function(params) {
             // console.log(params[0])
-            var tem = params[0].name;
-            if (tem.indexOf("/") < 0) {
-              tem > 9
-                ? (tem = tem + ":00 - " + tem + ":59")
-                : (tem = "0" + tem + ":00 - " + "0" + tem + ":59");
+            var htmlStr = "";
+            for (var i = 0; i < params.length; i++) {
+              var tem = params[i].name;
+              var val = params[i].value;
+              if (tem.indexOf("/") < 0) {
+                tem > 9
+                  ? (tem = tem + ":00 - " + tem + ":59")
+                  : (tem = "0" + tem + ":00 - " + "0" + tem + ":59");
+              }
+              val > 0 ? (val = val) : (val = "--");
+              htmlStr +=
+                '<div style="height:26px;line-height:26px;overflow:hidden;padding:6px 8px;">' +
+                '<span style="float:left;max-width:160px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;">' +
+                '<span class="border_span" style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
+                params[i].color +
+                ';"></span>' +
+                params[i].seriesName +
+                "</span>" +
+                '<span style="float:right">' +
+                val +
+                "</span>" +
+                "</div>";
             }
-            var val = params[0].value;
-            val > 0 ? (val = val) : (val = "--");
             var res =
-              '<div><div style="height:35px;line-height:35px;padding:0 8px;background:rgba(237,233,233,0.4)">' +
+              '<div><div style="height:40px;line-height:40px;padding:0 8px;background:rgba(237,233,233,0.4)">' +
               tem +
-              '</div><div style="height:45px;line-height:45px;overflow:hidden;padding:0 8px;">' +
-              '<span style="float:left">' +
-              '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
-              params[0].color +
-              ';"></span>' +
-              params[0].seriesName +
-              "</span>" +
-              '<span style="float:right">' +
-              val +
-              "</span>" +
+              htmlStr +
               "</div></div>";
             return res;
           }
@@ -264,10 +301,18 @@ export default {
         legend: {
           data: arr
         },
-        series: {
-          name: name_type,
-          data: that.y_data
-        }
+        series: [
+          {
+            name: arr[0],
+            // type: "line",
+            data: that.y_data
+          },
+          {
+            name: arr[1],
+            // type: "line",
+            data: that.y_data2
+          }
+        ]
       });
     },
     //table
@@ -297,8 +342,9 @@ export default {
         let arr = [];
         rs.items[0].map((data, i) => {
           var obj = {};
-          obj.date = data[0];
-          obj.amount = rs.items[1][i][0];
+          obj.tm = data[0];
+          obj.pv = rs.items[1][i][0];
+          obj.cv = rs.items[1][i][1];
           arr.push(obj);
         });
         // console.log(arr);
@@ -306,11 +352,10 @@ export default {
       });
     },
     changeSort(params) {
-      // console.log(params)
       let type = "";
       let order = "";
       params.order === "ascending" ? (order = "asc") : (order = "desc");
-      params.prop === "amount" ? (type = "pv") : (type = "tm");
+      type = params.prop;
       this.order = type + "," + order;
       this.getTableData();
     },
@@ -383,9 +428,10 @@ export default {
       background: #fff;
       height: 42px;
       line-height: 42px;
-      font-size: 16px;
-      border-left: #666 3px solid;
-      padding-left: 15px;
+      padding: 14px 15px 0;
+      font-size: 14px;
+      color: #323437;
+      font-weight: 700;
     }
   }
 }

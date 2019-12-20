@@ -5,10 +5,10 @@ const store = new Vuex.Store({
   state: {
     dateChosed: '-6',
   },
-  getters:{
-    getDateChosed(state) { 
-        return state.dateChosed
-     },
+  getters: {
+    getDateChosed(state) {
+      return state.dateChosed
+    },
     //  getCityId(){  //方法名随意,主要是用来承载变化的cityID的值
     //     return state.cityID
     //  }
@@ -25,7 +25,7 @@ const store = new Vuex.Store({
     selectDateChosed(context, params) {
       // context.commit('setCityID', params.cityID);
       context.commit('setDateChosed', params);
-    }
+    },
   }
 });
 //获取state的方法: this.$store.state 

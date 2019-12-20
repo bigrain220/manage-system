@@ -31,9 +31,6 @@
           </el-table-column>
           <el-table-column label="物料" align="center" class-name="select-column" min-width="160">
             <template slot-scope="scope">
-              <!-- <el-select placeholder="选择物料" size="mini" v-model="scope.row.mid" v-if="scope.row.id == styleControl.selectID" @change="mediaMidChange(scope.row)">
-                <el-option :label="item.name" :value="item.id" v-for="(item,index) in passMaterial" :key="index"></el-option>
-              </el-select> -->
               <el-select placeholder="选择物料" size="mini" v-model="tem_material.mid" v-if="scope.row.id == styleControl.selectID" @change="mediaMidChange(scope.row)">
                 <el-option :label="item.name" :value="item.id" v-for="(item,index) in passMaterial" :key="index"></el-option>
               </el-select>

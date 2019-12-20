@@ -59,8 +59,8 @@
       </el-table-column>
       <el-table-column label="备注" width="160" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.comment!=''"> {{scope.row.comment}}</span>
-          <span v-if="scope.row.comment==''"> -- </span>
+          <span v-if="scope.row.comment==''|| scope.row.comment==null "> -- </span>
+          <span v-else> {{scope.row.comment}}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" width="100" align="center">

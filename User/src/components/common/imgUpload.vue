@@ -31,7 +31,7 @@ export default {
   methods: {
     addhandlefileChange(file, fileList) {
       //选择完文件后的状态
-      // console.log(fileList,"change", file);
+      console.log(fileList,"change", file);
       if(fileList.length>1){
          fileList.splice(0,1);
       }

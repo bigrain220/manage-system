@@ -6,18 +6,24 @@
         <template slot="title">
           <i class="iconfont iconguanggaotoufang"></i><span>广告投放</span>
         </template>
-        <el-menu-item index="/user/index"><span class="space-item">媒体物料</span></el-menu-item>
-        <el-menu-item index="/user/media"><span class="space-item">媒体广告</span></el-menu-item>
-        <el-menu-item index="/user/keywords"><span class="space-item">文字广告</span></el-menu-item>
+        <!-- tty -->
+        <el-menu-item index="/user/toufang/index" v-if="locationParams.name==='toufang'"><span class="space-item">媒体物料</span></el-menu-item>
+        <el-menu-item index="/user/toufang/media" v-if="locationParams.name==='toufang'"><span class="space-item">媒体广告</span></el-menu-item>
+        <el-menu-item index="/user/yunmeng/keywords" v-if="locationParams.name==='yunmeng'"><span class="space-item">文字广告</span></el-menu-item>
+        <!-- 没有参数 -->
+        <el-menu-item index="/user/all/index" v-if="locationParams.name==='all'"><span class="space-item">媒体物料</span></el-menu-item>
+        <el-menu-item index="/user/all/media" v-if="locationParams.name==='all'"><span class="space-item">媒体广告</span></el-menu-item>
+        <el-menu-item index="/user/all/keywords" v-if="locationParams.name==='all'"><span class="space-item">文字广告</span></el-menu-item>
       </el-submenu>
       <el-submenu index="11">
         <template slot="title" id="titles"><i class="iconfont iconbangzhushouce"></i><span slot="title">效果查看</span>
         </template>
-        <el-menu-item index="/user/flow"><span class="space-item">流量分析</span></el-menu-item>
-        <el-menu-item index="/user/sources"><span class="space-item">来源分析</span></el-menu-item>
-        <el-menu-item index="/user/visit"><span class="space-item">访问分析</span></el-menu-item>
+        <el-menu-item :index="'/user/'+locationParams.name +'/generalization'"><span class="space-item">网站概况</span></el-menu-item>
+        <el-menu-item :index="'/user/'+locationParams.name +'/flow'"><span class="space-item">流量分析</span></el-menu-item>
+        <el-menu-item :index="'/user/'+locationParams.name +'/sources'"><span class="space-item">来源分析</span></el-menu-item>
+        <el-menu-item :index="'/user/'+locationParams.name +'/visit'"><span class="space-item">访问分析</span></el-menu-item>
       </el-submenu>
-      <el-menu-item index="/user/order"><i class="iconfont iconshujuguanli"></i><span class="space-item">我的订单</span></el-menu-item>
+      <el-menu-item :index="'/user/'+locationParams.name +'/order'"><i class="iconfont iconshujuguanli"></i><span class="space-item">我的订单</span></el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -27,7 +33,10 @@ export default {
   name: "leftNav",
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
+      locationParams:{
+        name:""
+      }
     };
   },
   methods: {
@@ -85,8 +94,11 @@ export default {
 					that.getWidth(that.isCollapse)
 				})
 			}else{
-               localStorage.setItem('isCollapse',this.isCollapse) 
-            }
+        localStorage.setItem('isCollapse',this.isCollapse) 
+      };
+      //判断项目
+    //  console.log(this.$route,'66');
+     this.locationParams.name = this.$route.params.id;
 	 }
 };
 

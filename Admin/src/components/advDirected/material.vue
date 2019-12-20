@@ -101,8 +101,9 @@ export default {
         ids: "",
         status: 3,
         comment: ""
-      }
+      },
     };
+    
   },
   methods: {
     search(isbtn) {

@@ -60,7 +60,7 @@ export default {
                 console.log(rs, "loginres");
                 if (rs.code === 1) {
                   // localStorage.setItem("yunmeng_auth", this.loginForm.username);
-                  this.$router.push({ path: "/user/index" });
+                  this.$router.push({ path: "/user/all/index" });
                   this.$message.success("登录成功！");
                 } else if (rs.code === 0) {
                   this.$message.error("用户名或密码出错！");
@@ -119,8 +119,9 @@ export default {
     }
   },
   mounted() {
+     console.log(this.$route,'66');
     if (utils.getCookie("auth")) {
-      this.$router.push({ path: "/user/index" });
+      this.$router.push({ path: "/user/all/index" });
     }
     this.init();
   }

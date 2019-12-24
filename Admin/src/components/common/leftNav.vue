@@ -37,7 +37,7 @@ export default {
           document.getElementById('radioGroup').style.backgroundColor = '#f2f3f4';
 					this.startAnimation(flag, 64);
 				}else{
-					this.startAnimation(flag, 200);
+					this.startAnimation(flag, 180);
 				}
 			},
 			startAnimation(flag,num){
@@ -59,8 +59,8 @@ export default {
 						_ele.style.marginLeft = _ele.offsetLeft + 5 + 'px';
 						// _eles.style.left = _eles.offsetLeft + 5 + 'px';
 						if(_ele.offsetLeft >= (num-5)){
-							_ele.style.marginLeft = '200px';
-							// _eles.style.left = '200px';
+							_ele.style.marginLeft = '180px';
+							// _eles.style.left = '180px';
 							clearInterval(timer);
 						}
 						
@@ -104,9 +104,9 @@ export default {
 padding:0 20px;box-sizing: border-box;cursor: pointer;height: 40px;line-height: 40px;}
 .nav-text{float: left;margin-left: 22px;font-size: 14px;}
 .radioGroup i{font-size: 14px;}
-.left-ul{border-right: 1px solid #e6e6e6!important;box-sizing: border-box; height: 100%;width: 200px;}
+.left-ul{border-right: 1px solid #e6e6e6!important;box-sizing: border-box; height: 100%;width:180px;}
 .left-ul.el-menu--collapse{width: 64px;}
-.el-submenu .el-menu-item{min-width: 199px;}
+.el-submenu .el-menu-item{min-width: 179px;}
 .el-submenu__title span,.space-item{margin-left: 2px;}
 .el-menu-item.is-active{background: #fff!important;}
 </style>

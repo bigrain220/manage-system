@@ -44,6 +44,7 @@
 <script>
 import Header from "../common/header";
 import API from "../../api/api";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "visit",
   components: { Header },
@@ -61,14 +62,18 @@ export default {
       currentPage: 1
     };
   },
+  computed: {
+    ...mapState(["dateChosed"])
+  },
   methods: {
+    ...mapActions(["selectDateChosed"]),
     choseDate(params) {
-      this.$store.commit("setDateChosed", params);
-      this.dateCur = this.$store.state.dateChosed;
-      this.order="pv,desc";
-      this.currentPage=1;
+      this.selectDateChosed(params);
+      this.dateCur = this.dateChosed;
+      this.order = "pv,desc";
+      this.currentPage = 1;
       this.getTableData();
-      this.$refs.sort.columnConfig.order = '';
+      this.$refs.sort.columnConfig.order = "";
     },
     getTableData() {
       this.loading.table = true;
@@ -113,7 +118,7 @@ export default {
     }
   },
   mounted() {
-    this.dateCur = this.$store.state.dateChosed;
+    this.dateCur = this.dateChosed;
     this.getTableData();
   }
 };

@@ -71,6 +71,7 @@ require("echarts/lib/component/legend");
 
 import Header from "../common/header";
 import API from "../../api/api";
+import {mapState,mapActions} from 'vuex'
 export default {
   name: "flow",
   components: { Header },
@@ -95,10 +96,14 @@ export default {
       currentPage: 1
     };
   },
+  computed:{
+    ...mapState(['dateChosed'])
+  },
   methods: {
+    ...mapActions(['selectDateChosed']),
     choseDate(params) {
-      this.$store.commit("setDateChosed", params);
-      this.dateCur = this.$store.state.dateChosed;
+      this.selectDateChosed(params)
+      this.dateCur = this.dateChosed;
       this.getFlowData();
       this.order = "tm,desc";
       this.currentPage = 1;
@@ -369,7 +374,7 @@ export default {
     }
   },
   mounted() {
-    this.dateCur = this.$store.state.dateChosed;
+    this.dateCur = this.dateChosed;
     this.getFlowData();
     this.initEcharts();
     this.getTableData();

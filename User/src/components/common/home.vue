@@ -20,5 +20,5 @@ export default {
 };
 </script>
 <style  scoped>
-#content{margin-left: 200px;}
+#content{margin-left: 180px;}
 </style>

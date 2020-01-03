@@ -2,7 +2,9 @@ import axios from 'axios';
 import qs from 'qs';
 import utils from '../utils/utils.js'
 import router from '../router/index.js'
-import { MessageBox } from 'element-ui'
+import {
+  MessageBox
+} from 'element-ui'
 
 
 
@@ -71,5 +73,81 @@ export default {
   },
   materialSave: params => {
     return axios.post('/material/save', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  engineList: params => {
+    return axios.post('/engine/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  engineEdit: params => {
+    return axios.post('/engine/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  engineAdd: params => {
+    return axios.post('/engine/add', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  engineDelete: params => {
+    return axios.post('/engine/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  siteList: params => {
+    return axios.post('/site/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  siteEdit: params => {
+    return axios.post('/site/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  siteAdd: params => {
+    return axios.post('/site/add', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  siteDelete: params => {
+    return axios.post('/site/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  // type
+  typeList: params => {
+    return axios.post('/type/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  typeDelete: params => {
+    return axios.post('/type/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  typeAdd: params => {
+    return axios.post('/type/add', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  typeEdit: params => {
+    return axios.post('/type/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  // size
+  sizeList: params => {
+    return axios.post('/size/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  sizeDelete: params => {
+    return axios.post('/size/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  sizeAdd: params => {
+    return axios.post('/size/add', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  sizeEdit: params => {
+    return axios.post('/size/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  // style
+  styleList: params => {
+    return axios.post('/style/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  styleDelete: params => {
+    return axios.post('/style/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  styleAdd: params => {
+    return axios.post('/style/add', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  styleEdit: params => {
+    return axios.post('/style/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  // unit
+  unitList: params => {
+    return axios.post('/unit/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  unitDelete: params => {
+    return axios.post('/unit/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  unitAdd: params => {
+    return axios.post('/unit/add', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  unitEdit: params => {
+    return axios.post('/unit/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
 }

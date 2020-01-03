@@ -36,6 +36,22 @@ export default new Router({
             requireAuth: true
           }
         },
+        {
+          path: 'engineConfig',
+          name: 'engineConfig',
+          component: resolve => require(['@/components/yunmengConfig/engineConfig'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: 'siteConfig',
+          name: 'siteConfig',
+          component: resolve => require(['@/components/yunmengConfig/siteConfig'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        },
       ]
     },
     {

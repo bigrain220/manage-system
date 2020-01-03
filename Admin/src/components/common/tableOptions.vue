@@ -463,7 +463,7 @@ export default {
 .add-btn {
   position: absolute;
   right: 15px;
-  top: 13px;
+  top: 20px;
   padding: 10px 30px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="generalization-analysis">
-    <Header :title="title">
+    <Header :title="title" :dateRange="dateRange">
       <template>
         <div id="filters">
           <div class="control-bar-wrapper clearfix">
@@ -45,7 +45,7 @@
             </tbody>
           </table>
         </div>
-        <trend-echarts></trend-echarts>
+        <trend-echarts @dateRangeEvent=dateRangeEvent></trend-echarts>
         <div class="row">
           <div class="row-item">
             <div class="title">Top10搜索词<span class="el-icon-right" @click="toDetailPage('sources')"></span></div>
@@ -55,7 +55,7 @@
                   <a :href="'//www.baidu.com/s?wd='+scope.row.word" target="_blank">{{scope.row.word}}</a>
                 </template>
               </el-table-column>
-              <el-table-column prop="amout" label="浏览量(pv)" width="100" align="right">
+              <el-table-column prop="amout" label="浏览量(PV)" width="100" align="right">
               </el-table-column>
               <el-table-column prop="percent" label="占比" width="90">
               </el-table-column>
@@ -69,7 +69,7 @@
                   <a :href="'//'+scope.row.page" target="_blank">{{scope.row.page}}</a>
                 </template>
               </el-table-column>
-              <el-table-column prop="amout" label="浏览量(pv)" width="100" align="right">
+              <el-table-column prop="amout" label="浏览量(PV)" width="100" align="right">
               </el-table-column>
               <el-table-column prop="percent" label="占比" width="90">
               </el-table-column>
@@ -91,6 +91,7 @@ export default {
   data() {
     return {
       title: "网站概况",
+      dateRange:"",
       loading: {
         wordTableLoading: false,
         pageTableLoading: false
@@ -121,7 +122,7 @@ export default {
     getWordTableData() {
       this.loading.wordTableLoading = true;
       API.overviewWord({ date: this.dateCur }).then(rs => {
-        // console.log(rs);
+        console.log(rs);
         var arr = [];
         rs.items[0].map((item, index) => {
           var obj = {};
@@ -152,6 +153,9 @@ export default {
     },
     toDetailPage(params) {
       this.$router.push("/user/" + this.$route.params.id + "/" + params);
+    },
+    dateRangeEvent(val){
+      this.dateRange = "( "+val+" )";
     }
   },
   mounted() {

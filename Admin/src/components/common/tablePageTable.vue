@@ -69,7 +69,8 @@
     </el-table>
 
     <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal==='adunit'" key="tableData4">
-      <el-table-column type="index" label="序号" width="60">
+      <el-table-column  label="序号" width="60">
+           <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *pageSize + 1}} </span></template>
       </el-table-column>
       <el-table-column prop="id" label="ID" width="100" align="center">
       </el-table-column>
@@ -180,7 +181,7 @@
             <el-option label="Ubuntu Light" value="Ubuntu Light"></el-option>
             <el-option label="Lora" value="Lora"></el-option>
             <el-option label="Slabo" value="Slabo"></el-option>
-          </el-select>
+          </el-select>                                 
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="styleForm.sort" controls-position="right" :min="0" :max="100"></el-input-number>
@@ -231,7 +232,9 @@ export default {
   name: "tablePageTable",
   props: {
     typeVal: { type: String, required: true },
-    allTableData: { type: Array }
+    allTableData: { type: Array },
+    pageSize: { type: Number, required: true },
+    currentPage: { type: Number, required: true }
   },
   data() {
     return {

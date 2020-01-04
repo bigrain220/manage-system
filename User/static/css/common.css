@@ -44,7 +44,8 @@ body{
 
 *{box-sizing: border-box;}
 .content-box{padding:0 20px;position: relative;margin-top: 20px;}
-.el-table th{background: #eef1f6!important;}
+/* .el-table th{background: #eef1f6!important;} */
+.el-table th{background: #f4f4f4!important;}
 .el-pagination{text-align:right!important;;padding:18px 18px 10px 10px!important;}
 a,a:hover,a:visited{color:#1276e5;}
 /* analysis-header */

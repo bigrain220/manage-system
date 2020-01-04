@@ -30,7 +30,8 @@ export default {
       this.y_data2 = [];
       this.num_data = [];
       API.overviewTrend({date:params}).then(res => {
-        console.log(res);
+        // console.log(res);
+        this.$emit('dateRangeEvent',res.timeSpan[0])
         for (var i = 0; i < res.items[0].length; i++) {
           this.x_data.push(res.items[0][i][0]);
           if (res.items[1][i][0] == "--") {

@@ -1,6 +1,6 @@
 <template>
   <div class="visit-analysis">
-    <Header :title="title">
+    <Header :title="title" :dateRange="dateRange">
       <template>
         <div id="filters">
           <div class="control-bar-wrapper clearfix">
@@ -33,7 +33,9 @@
           </el-table-column>
           <el-table-column label="" align="center">
           </el-table-column>
-          <el-table-column prop="amount" label="浏览量(pv)" align="center" sortable="custom" ref="sort">
+          <el-table-column label="网站基础指标">
+            <el-table-column prop="amount" label="浏览量(PV)" align="center" sortable="custom" ref="sort">
+            </el-table-column>
           </el-table-column>
         </el-table>
         <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
@@ -51,6 +53,7 @@ export default {
   data() {
     return {
       title: "访问分析",
+      dateRange: "",
       loading: {
         table: false
       },
@@ -84,7 +87,8 @@ export default {
         order: this.order
       };
       API.visitPage(params).then(rs => {
-        console.log(rs);
+        // console.log(rs);
+        this.dateRange = "( " + rs.timeSpan[0] + " )";
         this.loading.table = false;
         this.total = rs.total;
         let arr = [];

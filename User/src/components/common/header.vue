@@ -3,6 +3,7 @@
     <div :class="{ 'content-header': true, 'head-fixed': isFixed }">
       <div class="header-container clearfix">
         <span class="header-text l">{{title}}</span>
+        <span class="header-range">{{dateRange}}</span>
       </div>
       <slot></slot>
     </div>
@@ -13,7 +14,8 @@
 export default {
   name: "Header",
   props: {
-    title: { type: String }
+    title: { type: String },
+    dateRange:{type:String}
   },
   data() {
     return {
@@ -69,7 +71,9 @@ export default {
   line-height: 16px;
   margin-left: 20px;
 }
-
+.header-container .header-range{
+  margin-left: 8px;
+}
 .header-container .header-data {
   margin-left: 3px;
   font-size: 14px;

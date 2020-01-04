@@ -24,7 +24,6 @@
     <div class="content-box">
       <div class="advertise-config-box">
         <table-page :options="selectCur"></table-page>
-        <!-- <table-options :options="selectCur"></table-options> -->
       </div>
     </div>
   </div>
@@ -32,10 +31,9 @@
 <script>
 import Header from "../common/header";
 import tablePage from "../common/tablePage";
-import tableOptions from "../common/tableOptions";
 export default {
   name: "advertiseConfig",
-  components: { Header, tableOptions, tablePage },
+  components: { Header, tablePage },
   data() {
     return {
       title: "广告配置",

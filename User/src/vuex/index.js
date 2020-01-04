@@ -9,17 +9,11 @@ const store = new Vuex.Store({
     getDateChosed(state) {
       return state.dateChosed
     },
-    //  getCityId(){  //方法名随意,主要是用来承载变化的cityID的值
-    //     return state.cityID
-    //  }
   },
   mutations: {
     setDateChosed(state, value) {
       state.dateChosed = value;
     },
-    // setCityID(state, value) {
-    //   state.cityID = value;
-    // }
   },
   actions: {
     selectDateChosed(context, params) {

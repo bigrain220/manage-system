@@ -80,13 +80,6 @@ export default {
         }
       });
     },
-    // logOut() {
-    //   API.logOut({}).then(rs => {
-    //     if (rs) {
-    //       this.$message.warning("已退出原有账号，请重新登录");
-    //     }
-    //   });
-    // },
     init() {
       var that = this;
       var nc_scene = "nc_login";
@@ -119,7 +112,6 @@ export default {
     }
   },
   mounted() {
-     console.log(this.$route,'66');
     if (utils.getCookie("auth")) {
       this.$router.push({ path: "/user/all/index" });
     }

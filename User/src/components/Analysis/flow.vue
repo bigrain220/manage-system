@@ -1,6 +1,6 @@
 <template>
   <div class="flow-analysis">
-    <Header :title="title">
+    <Header :title="title" :dateRange="dateRange">
       <template>
         <div id="filters">
           <div class="control-bar-wrapper clearfix">
@@ -32,20 +32,22 @@
         <h3 class="title">趋势图</h3>
         <div id="flowChart" style="width:100%;height:400px;background:#fff;" v-loading="loading.echarts"></div>
         <div class="table-title"></div>
-        <el-table :data="tableData" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort" v-if="formatSelected==='0'" key="0">
+        <el-table :data="tableData" show-summary sum-text="当前汇总" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort" v-if="formatSelected==='0'" key="0">
           <el-table-column label="序号" type="index" width="80">
           </el-table-column>
           <el-table-column prop="tm" label="时间" sortable="custom" ref="dateSort">
           </el-table-column>
           <el-table-column label="" align="center">
           </el-table-column>
-          <el-table-column prop="pv" label="浏览量(pv)" align="center" sortable="custom" ref="pvSort" width="200">
-          </el-table-column>
-          <el-table-column prop="cv" label="点击量(cv)" align="center" sortable="custom" ref="cvSort" width="200">
+          <el-table-column label="网站基础指标">
+            <el-table-column prop="pv" label="浏览量(PV)" align="center" sortable="custom" ref="pvSort" width="200">
+            </el-table-column>
+            <el-table-column prop="cv" label="点击量(CV)" align="center" sortable="custom" ref="cvSort" width="200">
+            </el-table-column>
           </el-table-column>
         </el-table>
         <div v-if="formatSelected==='0'" style="height:56px;"></div>
-        <el-table :data="tableData" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort" v-if="formatSelected==='1'" key="1">
+        <el-table :data="tableData" show-summary sum-text="当前汇总" style="width: 100%" stripe size="medium" v-loading="loading.table" @sort-change="changeSort" v-if="formatSelected==='1'" key="1">
           <el-table-column label="序号" width="80">
             <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *size + 1}} </span></template>
           </el-table-column>
@@ -53,9 +55,11 @@
           </el-table-column>
           <el-table-column label="" align="center">
           </el-table-column>
-          <el-table-column prop="pv" label="浏览量(pv)" align="center" sortable="custom" ref="pvSort" width="200">
-          </el-table-column>
-          <el-table-column prop="cv" label="点击量(cv)" align="center" sortable="custom" ref="cvSort" width="200">
+          <el-table-column label="网站基础指标">
+            <el-table-column prop="pv" label="浏览量(PV)" align="center" sortable="custom" ref="pvSort" width="200">
+            </el-table-column>
+            <el-table-column prop="cv" label="点击量(CV)" align="center" sortable="custom" ref="cvSort" width="200">
+            </el-table-column>
           </el-table-column>
         </el-table>
         <el-pagination background v-if="formatSelected==='1'" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 40]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
@@ -71,13 +75,14 @@ require("echarts/lib/component/legend");
 
 import Header from "../common/header";
 import API from "../../api/api";
-import {mapState,mapActions} from 'vuex'
+import { mapState, mapActions } from "vuex";
 export default {
   name: "flow",
   components: { Header },
   data() {
     return {
       title: "流量分析",
+      dateRange: "",
       loading: {
         echarts: false,
         table: false
@@ -96,13 +101,13 @@ export default {
       currentPage: 1
     };
   },
-  computed:{
-    ...mapState(['dateChosed'])
+  computed: {
+    ...mapState(["dateChosed"])
   },
   methods: {
-    ...mapActions(['selectDateChosed']),
+    ...mapActions(["selectDateChosed"]),
     choseDate(params) {
-      this.selectDateChosed(params)
+      this.selectDateChosed(params);
       this.dateCur = this.dateChosed;
       this.getFlowData();
       this.order = "tm,desc";
@@ -177,33 +182,29 @@ export default {
           left: "5%",
           right: "5%"
         },
-        xAxis: 
-          {
-            type: "category",
-            boundaryGap: false,
-            axisLine: {
-              lineStyle: {
-                color: "#eee"
-              }
-            },
-            data: []
-          }
-        ,
-        yAxis: 
-          {
-            type: "value",
-            axisLine: {
-              lineStyle: {
-                color: "transparent"
-              }
-            },
-            splitLine: {
-              lineStyle: {
-                color: "#eee"
-              }
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          axisLine: {
+            lineStyle: {
+              color: "#eee"
+            }
+          },
+          data: []
+        },
+        yAxis: {
+          type: "value",
+          axisLine: {
+            lineStyle: {
+              color: "transparent"
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              color: "#eee"
             }
           }
-        ,
+        },
         series: [
           {
             name: "",
@@ -261,14 +262,12 @@ export default {
       }
       var arr = ["浏览量(PV)", "点击量(CV)"];
       that.myChart.setOption({
-        xAxis: 
-          {
-            axisLabel: {
-              interval: inter_val
-            },
-            data: xData
-          }
-        ,
+        xAxis: {
+          axisLabel: {
+            interval: inter_val
+          },
+          data: xData
+        },
         tooltip: {
           formatter: function(params) {
             // console.log(params[0])
@@ -341,7 +340,8 @@ export default {
         };
       }
       API.trendTime(params).then(rs => {
-        console.log(rs);
+        // console.log(rs);
+        this.dateRange = "( " + rs.timeSpan[0] + " )";
         this.loading.table = false;
         this.total = rs.total;
         let arr = [];

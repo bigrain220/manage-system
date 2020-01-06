@@ -69,20 +69,32 @@
     </el-table>
 
     <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal==='adunit'" key="tableData4">
-      <el-table-column  label="序号" width="60">
-           <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *pageSize + 1}} </span></template>
+      <el-table-column label="序号" width="60">
+        <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *pageSize + 1}} </span></template>
       </el-table-column>
       <el-table-column prop="id" label="ID" width="100" align="center">
       </el-table-column>
       <el-table-column prop="name" label="名称">
       </el-table-column>
-      <el-table-column prop="site_id" label="网站ID">
+      <el-table-column label="网站ID">
+        <template slot-scope="scope">
+          <span v-text="getFilters(scope.row.site_id,'site')"></span>
+        </template>
       </el-table-column>
-      <el-table-column prop="type_id" label="类型ID">
+      <el-table-column label="类型ID">
+        <template slot-scope="scope">
+          <span v-text="getFilters(scope.row.type_id,'type')"></span>
+        </template>
       </el-table-column>
-      <el-table-column prop="size_id" label="尺寸ID">
+      <el-table-column label="尺寸ID">
+        <template slot-scope="scope">
+          <span v-text="getFilters(scope.row.size_id,'size')"></span>
+        </template>
       </el-table-column>
-      <el-table-column prop="style_id" label="样式ID">
+      <el-table-column label="样式ID">
+        <template slot-scope="scope">
+          <span v-text="getFilters(scope.row.style_id,'style')"></span>
+        </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序">
       </el-table-column>
@@ -181,7 +193,7 @@
             <el-option label="Ubuntu Light" value="Ubuntu Light"></el-option>
             <el-option label="Lora" value="Lora"></el-option>
             <el-option label="Slabo" value="Slabo"></el-option>
-          </el-select>                                 
+          </el-select>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="styleForm.sort" controls-position="right" :min="0" :max="100"></el-input-number>
@@ -202,16 +214,28 @@
           <el-input v-model="unitForm.name" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="网站ID:">
-          <el-input-number v-model="unitForm.site_id" controls-position="right" :min="0" :max="10000"></el-input-number>
+          <el-select v-model="unitForm.site_id" placeholder="请选择">
+            <el-option v-for="item in selectOptions.site" :key="item.value" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="类型ID:">
-          <el-input-number v-model="unitForm.type_id" controls-position="right" :min="0" :max="10000"></el-input-number>
+          <el-select v-model="unitForm.type_id" placeholder="请选择">
+            <el-option v-for="item in selectOptions.type" :key="item.value" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="尺寸ID:">
-          <el-input-number v-model="unitForm.size_id" controls-position="right" :min="0" :max="10000"></el-input-number>
+          <el-select v-model="unitForm.size_id" placeholder="请选择">
+            <el-option v-for="item in selectOptions.size" :key="item.value" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="样式ID:">
-          <el-input-number v-model="unitForm.style_id" controls-position="right" :min="0" :max="10000"></el-input-number>
+          <el-select v-model="unitForm.style_id" placeholder="请选择">
+            <el-option v-for="item in selectOptions.style" :key="item.value" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="unitForm.sort" controls-position="right" :min="0" :max="100"></el-input-number>
@@ -285,6 +309,12 @@ export default {
         size_id: "",
         style_id: "",
         sort: ""
+      },
+      selectOptions: {
+        site: [],
+        type: [],
+        size: [],
+        style: []
       }
     };
   },
@@ -435,9 +465,27 @@ export default {
           this.hexObj[key] = "";
         });
       }
+    },
+    async getOptions() {
+      const site = await API.siteGet();
+      const type = await API.typeGet();
+      const size = await API.sizeGet();
+      const style = await API.styleGet();
+      this.selectOptions.site = site;
+      this.selectOptions.type = type;
+      this.selectOptions.size = size;
+      this.selectOptions.style = style;
+    },
+    getFilters(value, type) {
+      var data = this.selectOptions[type].find(x => x.id === value);
+      if (data) {
+        return data.name;
+      }
     }
   },
-  mounted() {},
+  mounted() {
+    this.getOptions();
+  },
   computed: {
     tableData: function() {
       return this.allTableData;
@@ -452,6 +500,11 @@ export default {
         });
       },
       deep: true
+    },
+    typeVal:function(val){
+      if(val ==="adunit"){
+        this.getOptions();
+      }
     }
   }
 };

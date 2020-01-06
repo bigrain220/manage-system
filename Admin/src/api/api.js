@@ -86,6 +86,10 @@ export default {
   engineDelete: params => {
     return axios.post('/engine/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
+  // site
+  siteGet: params => {
+    return axios.post('/site/get', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
   siteList: params => {
     return axios.post('/site/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
@@ -99,6 +103,9 @@ export default {
     return axios.post('/site/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   // type
+  typeGet: params => {
+    return axios.post('/type/get', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
   typeList: params => {
     return axios.post('/type/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
@@ -112,6 +119,9 @@ export default {
     return axios.post('/type/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   // size
+  sizeGet: params => {
+    return axios.post('/size/get', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
   sizeList: params => {
     return axios.post('/size/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
@@ -125,6 +135,9 @@ export default {
     return axios.post('/size/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   // style
+  styleGet: params => {
+    return axios.post('/style/get', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
   styleList: params => {
     return axios.post('/style/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },

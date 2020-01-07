@@ -30,25 +30,25 @@
             <el-button @click="resetSearch">重置</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="tableData" style="width: 100%"  stripe>
+        <el-table :data="tableData" style="width: 100%" stripe>
           <el-table-column label="序号" width="50">
             <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *size + 1}} </span></template>
           </el-table-column>
           <el-table-column label="ID" prop="id" width="120" align="center">
           </el-table-column>
-          <el-table-column label="搜索引擎" prop="name" width="180" >
+          <el-table-column label="搜索引擎" prop="name" width="180">
           </el-table-column>
           <el-table-column label="URL地址" prop="url">
             <template slot-scope="scope">
-              <a target="_blank" :href="scope.row.url" :title="scope.row.url">{{scope.row.url}}</a>
+              <a target="_blank" :href="'//'+scope.row.url" :title="scope.row.url">{{scope.row.url}}</a>
             </template>
           </el-table-column>
-          <el-table-column label="匹配正则" >
+          <el-table-column label="匹配正则">
             <template slot-scope="scope">{{ scope.row.regex }}</template>
           </el-table-column>
-           <el-table-column label="正则偏移" prop="offset" align="center">
+          <el-table-column label="正则偏移" prop="offset" align="center">
           </el-table-column>
-           <el-table-column label="排序" prop="sort" align="center">
+          <el-table-column label="排序" prop="sort" align="center">
           </el-table-column>
           <el-table-column label="操作" align="center" width="160">
             <template slot-scope="scope">
@@ -285,6 +285,14 @@ export default {
   },
   mounted() {
     this.getEngineList({ page: this.currentPage, rows: this.size });
+  },
+  watch: {
+    total() {
+      if (this.total == (this.currentPage - 1) * this.size && this.total != 0) {
+        this.currentPage -= 1;
+        this.search();
+      }
+    }
   }
 };
 </script>

@@ -45,22 +45,28 @@
           </el-table-column>
           <el-table-column label="名称" prop="name" width="180" align="center">
           </el-table-column>
-          <el-table-column label="image" prop="image" align="center">
-            <template slot-scope="scope">
-              <img :src="scope.row.image" alt="">
-            </template>
-          </el-table-column>
-          <el-table-column label="URL地址" prop="url" align="center">
+          <el-table-column label="地址" prop="url" width="180" align="center">
             <template slot-scope="scope">
               <a target="_blank" :href="scope.row.url" :title="scope.row.url">{{scope.row.url}}</a>
             </template>
           </el-table-column>
-          <el-table-column label="价格" prop="url" align="center" width="100">
+          <el-table-column label="图片" prop="image" align="center">
+            <template slot-scope="scope">
+              <el-image :src="scope.row.image" fit="contain">
+                <div slot="error" class="image-slot">
+                  <!-- <i class="el-icon-picture-outline"></i> -->
+                </div>
+              </el-image>
+            </template>
+          </el-table-column>
+          <el-table-column label="备注" prop="remark" align="center">
+          </el-table-column>
+          <el-table-column label="价格" prop="price" align="center">
             <template slot-scope="scope">
               <div>{{scope.row.price}}</div>
             </template>
           </el-table-column>
-          <el-table-column label="备注" prop="remark" align="center">
+          <el-table-column label="排序" prop="sort" align="center">
           </el-table-column>
           <el-table-column label="状态" align="center" width="80">
             <template slot-scope="scope">
@@ -86,23 +92,23 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="editDialogData.name"></el-input>
         </el-form-item>
-        <el-form-item label="URL地址：" prop="url">
+        <el-form-item label="地址：" prop="url">
           <el-input v-model="editDialogData.url"></el-input>
         </el-form-item>
-        <el-form-item label="image：" prop="image">
+        <el-form-item label="图片：" prop="image">
           <el-input v-model="editDialogData.image"></el-input>
         </el-form-item>
-        <el-form-item label="remark：" prop="remark：">
+        <el-form-item label="备注：" prop="remark：">
           <el-input v-model="editDialogData.remark"></el-input>
         </el-form-item>
-        <el-form-item label="price：" prop="price">
+        <el-form-item label="价格：" prop="price">
           <el-input-number v-model="editDialogData.price" controls-position="right" :min="0" :max="100"></el-input-number>
         </el-form-item>
         <el-form-item label="排序：" prop="sort">
           <el-input-number v-model="editDialogData.sort" controls-position="right" :min="0" :max="100"></el-input-number>
         </el-form-item>
-        <el-form-item label="status：" prop="status">
-          <el-switch v-model="editDialogData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="正常" inactive-text="关闭">
+        <el-form-item label="状态：" prop="status">
+          <el-switch v-model="editDialogData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="正常" inactive-text="关闭" :active-value="1" :inactive-value="0">
           </el-switch>
         </el-form-item>
       </el-form>
@@ -117,23 +123,23 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="addDialogData.name"></el-input>
         </el-form-item>
-        <el-form-item label="URL地址：" prop="url">
+        <el-form-item label="地址：" prop="url">
           <el-input v-model="addDialogData.url"></el-input>
         </el-form-item>
-        <el-form-item label="image：" prop="image">
+        <el-form-item label="图片：" prop="image">
           <el-input v-model="addDialogData.image"></el-input>
         </el-form-item>
-        <el-form-item label="remark：" prop="remark：">
+        <el-form-item label="备注：" prop="remark：">
           <el-input v-model="addDialogData.remark"></el-input>
         </el-form-item>
-        <el-form-item label="price：" prop="price">
+        <el-form-item label="价格：" prop="price">
           <el-input-number v-model="addDialogData.price" controls-position="right" :min="0" :max="100"></el-input-number>
         </el-form-item>
         <el-form-item label="排序：" prop="sort">
           <el-input-number v-model="addDialogData.sort" controls-position="right" :min="0" :max="100"></el-input-number>
         </el-form-item>
-        <el-form-item label="status：" prop="status">
-          <el-switch v-model="addDialogData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="正常" inactive-text="关闭">
+        <el-form-item label="状态：" prop="status">
+          <el-switch v-model="addDialogData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="正常" inactive-text="关闭" :active-value="1" :inactive-value="0">
           </el-switch>
         </el-form-item>
       </el-form>
@@ -174,7 +180,7 @@ export default {
         remark: "",
         price: "",
         sort: "",
-        status: ""
+        status: null
       },
       addDialogData: {
         name: "",
@@ -183,18 +189,15 @@ export default {
         remark: "",
         price: "",
         sort: "",
-        status: ""
+        status: null
       },
       dialogVisible: {
         editDialogVisible: false,
         addDialogVisible: false
       },
       rules: {
-        name: [
-          { required: true, message: "请输入搜索引擎名称", trigger: "blur" }
-        ],
-        url: [{ required: true, message: "请输入URL地址", trigger: "blur" }],
-        image: [{ required: true, message: "请输入匹配正则", trigger: "blur" }]
+        name: [{ required: true, message: "请输入网站名称", trigger: "blur" }],
+        url: [{ required: true, message: "请输入URL地址", trigger: "blur" }]
       }
     };
   },
@@ -276,6 +279,7 @@ export default {
       }
     },
     addClick() {
+      this.addDialogData.status = 1;
       this.dialogVisible.addDialogVisible = true;
     },
     submitForm(formName) {
@@ -308,7 +312,7 @@ export default {
         params.title = "添加";
         params.visibleName = "addDialogVisible";
       }
-      if (res === 1) {
+      if (res.code === 1) {
         this.$message.success(params.title + "成功！");
         this.dialogVisible[params.visibleName] = false;
         this.search();
@@ -321,6 +325,14 @@ export default {
   },
   mounted() {
     this.getsiteList({ page: this.currentPage, rows: this.size });
+  },
+  watch: {
+    total() {
+      if (this.total == (this.currentPage - 1) * this.size && this.total != 0) {
+        this.currentPage -= 1;
+        this.search();
+      }
+    }
   },
   filters: {
     statusFilter: function(value) {

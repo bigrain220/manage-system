@@ -1,7 +1,7 @@
 <template>
   <div class="table-box">
     <el-button type="primary" size="medium " class="add-btn" @click="addClick">新增</el-button>
-    <el-table :data="tableData" style="width: 100%;" v-if="typeVal==='adtype'" key="tableData1">
+    <el-table :data="tableData" style="width: 100%;" v-if="typeVal==='adtype'" key="tableData1" stripe>
       <el-table-column type="index" label="序号" width="60">
       </el-table-column>
       <el-table-column prop="id" label="ID" width="200" align="center">
@@ -18,7 +18,7 @@
       </el-table-column>
     </el-table>
 
-    <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal==='adsize'" key="tableData2">
+    <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal==='adsize'" key="tableData2" stripe>
       <el-table-column type="index" label="序号" width="60">
       </el-table-column>
       <el-table-column prop="id" label="ID" width="200" align="center">
@@ -29,6 +29,8 @@
       </el-table-column>
       <el-table-column prop="height" label="高度">
       </el-table-column>
+       <el-table-column prop="sort" label="排序" align="center">
+      </el-table-column>
       <el-table-column label="操作" align="center" width="160">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="editClick(scope.row)"></el-button>
@@ -37,7 +39,7 @@
       </el-table-column>
     </el-table>
 
-    <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal=='adstyle'" key="tableData3">
+    <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal=='adstyle'" key="tableData3" stripe>
       <el-table-column type="index" label="序号" width="60">
       </el-table-column>
       <el-table-column prop="id" label="ID" width="100" align="center">
@@ -68,7 +70,7 @@
       </el-table-column>
     </el-table>
 
-    <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal==='adunit'" key="tableData4">
+    <el-table :data="tableData" style="width: 100%;" v-else-if="typeVal==='adunit'" key="tableData4" stripe>
       <el-table-column label="序号" width="60">
         <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) *pageSize + 1}} </span></template>
       </el-table-column>
@@ -76,22 +78,22 @@
       </el-table-column>
       <el-table-column prop="name" label="名称">
       </el-table-column>
-      <el-table-column label="网站ID">
+      <el-table-column label="网站">
         <template slot-scope="scope">
           <span v-text="getFilters(scope.row.site_id,'site')"></span>
         </template>
       </el-table-column>
-      <el-table-column label="类型ID">
+      <el-table-column label="类型">
         <template slot-scope="scope">
           <span v-text="getFilters(scope.row.type_id,'type')"></span>
         </template>
       </el-table-column>
-      <el-table-column label="尺寸ID">
+      <el-table-column label="尺寸">
         <template slot-scope="scope">
           <span v-text="getFilters(scope.row.size_id,'size')"></span>
         </template>
       </el-table-column>
-      <el-table-column label="样式ID">
+      <el-table-column label="样式">
         <template slot-scope="scope">
           <span v-text="getFilters(scope.row.style_id,'style')"></span>
         </template>
@@ -213,25 +215,25 @@
         <el-form-item label="名称:">
           <el-input v-model="unitForm.name" placeholder="请输入名称"></el-input>
         </el-form-item>
-        <el-form-item label="网站ID:">
+        <el-form-item label="网站:">
           <el-select v-model="unitForm.site_id" placeholder="请选择">
             <el-option v-for="item in selectOptions.site" :key="item.value" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="类型ID:">
+        <el-form-item label="类型:">
           <el-select v-model="unitForm.type_id" placeholder="请选择">
             <el-option v-for="item in selectOptions.type" :key="item.value" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="尺寸ID:">
+        <el-form-item label="尺寸:">
           <el-select v-model="unitForm.size_id" placeholder="请选择">
             <el-option v-for="item in selectOptions.size" :key="item.value" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="样式ID:">
+        <el-form-item label="样式:">
           <el-select v-model="unitForm.style_id" placeholder="请选择">
             <el-option v-for="item in selectOptions.style" :key="item.value" :label="item.name" :value="item.id">
             </el-option>

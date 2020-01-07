@@ -7,9 +7,9 @@
           <el-form-item label="状态:">
             <el-select v-model="searchForm.status" placeholder="">
               <el-option label="全部" value=""></el-option>
-              <el-option label="待审" :value="1"></el-option>
-              <el-option label="通过" :value="2"></el-option>
-              <el-option label="拒绝" :value="3"></el-option>
+              <el-option label="待审核" :value="1"></el-option>
+              <el-option label="已通过" :value="2"></el-option>
+              <el-option label="已拒绝" :value="3"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -441,10 +441,10 @@ export default {
           return "待审核";
           break;
         case 2:
-          return "通过";
+          return "已通过";
           break;
         case 3:
-          return "拒绝";
+          return "已拒绝";
           break;
         default:
           return value;

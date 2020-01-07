@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title='"广告投放( "+directedObj.directedTitle+" )"' :visible.sync="isShow" @closed="directedMediadialogClose" class="directed-dialog" :close-on-click-modal="false" v-loading="isLoading" element-loading-text="正在投放中...">
+  <el-dialog :title='"广告投放( "+directedObj.directedTitle+" )"' :visible.sync="isShow" @closed="directedMediadialogClose" class="directed-dialog" :fullscreen="isFullscreen" :close-on-click-modal="false" v-loading="isLoading" element-loading-text="正在投放中...">
     <el-form :inline="true" class="search-form" label-width="60px" size="mini" @submit.native.prevent>
       <el-form-item label="关键词:">
         <el-input placeholder="请输入内容" v-model="searchWord" clearable :maxlength="12" @keydown.enter.native="search(true)"></el-input>
@@ -11,6 +11,7 @@
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </el-form>
+    <span class="el-icon-full-screen full-screen-btn" @click="isFullscreen=!isFullscreen"></span>
     <div class="table-box">
       <el-table ref="multipleTable" :data="tableData" style="width: 100%;" @selection-change="handleSelectionChange" border stripe size="mini">
         <el-table-column type="selection" width="50">
@@ -47,6 +48,7 @@ export default {
     return {
       isShow: true,
       isLoading: false,
+      isFullscreen:false,
       searchWord: "",
       tableData: [],
       selectTotal: null,
@@ -89,7 +91,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-       this.search();
+      this.search();
     },
     directedAction() {
       var params = {
@@ -185,6 +187,7 @@ export default {
     },
     directedMediadialogClose() {
       this.isShow = false;
+      this.isFullscreen = false;
     },
     handleSelectionChange(val) {
       // console.log(val,'select')
@@ -220,16 +223,15 @@ export default {
     isShow(val) {
       this.$emit("mapEvent", val);
     }
-  },
- 
+  }
 };
 </script>
 <style lang="scss" scoped>
 </style>
 <style lang="scss">
 .directed-dialog .el-dialog {
-  width: 60%;
-  margin-top: 10vh !important;
+  // width: 60%;
+  // margin-top: 10vh !important;
   .el-dialog__title {
     font-size: 14px;
     font-weight: bold;
@@ -237,13 +239,19 @@ export default {
   .el-dialog__body {
     padding-top: 20px;
   }
+  .full-screen-btn{
+    position: absolute;
+    right: 50px;
+    top: 21px;
+    cursor: pointer;
+  }
   .table-box {
     width: 100%;
     position: relative;
     max-height: 44vh;
     overflow-y: auto;
-    a em{
-      color:red;
+    a em {
+      color: red;
       font-style: normal;
     }
   }

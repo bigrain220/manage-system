@@ -163,4 +163,8 @@ export default {
   unitEdit: params => {
     return axios.post('/unit/edit', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
+  // order
+  orderList: params => {
+    return axios.post('/order/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
 }

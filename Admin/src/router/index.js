@@ -52,6 +52,14 @@ export default new Router({
             requireAuth: true
           }
         },
+        {
+          path: 'order',
+          name: 'order',
+          component: resolve => require(['@/components/order/order'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        },
       ]
     },
     {

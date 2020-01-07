@@ -1,20 +1,25 @@
 <template>
   <div id="lefnav">
-    <el-menu :default-active="onRoutes" :default-openeds="['1', '2']" class="el-menu-vertical-demo left-ul" background-color="#fff" router text-color="#434444" active-text-color="#29e" :collapse="isCollapse">
+    <el-menu :default-active="onRoutes" :default-openeds="['1', '2','3']" class="el-menu-vertical-demo left-ul" background-color="#fff" router text-color="#434444" active-text-color="#29e" :collapse="isCollapse">
       <div class="radioGroup" id="radioGroup" @click="change"><span class="nav-text" v-show="!isCollapse">网站导航</span><i :class="[isCollapse==true?'l':'r' , 'iconfont','icondaohang']"></i></div>
       <el-submenu index="1">
         <template slot="title">
           <i class="iconfont iconguanggaotoufang"></i>
-          <span>广告直投</span>
+          <span>物料管理</span>
         </template>
-        <el-menu-item index="/admin/index"><span class="space-item">物料管理</span></el-menu-item>
+        <el-menu-item index="/admin/index"><span class="space-item">物料列表</span></el-menu-item>
       </el-submenu>
       <el-submenu index="2">
-        <template slot="title" id="titles"><i class="iconfont iconbangzhushouce" style="font-size:14px;margin-right:4px;"></i><span slot="title">云盟配置</span>
+        <template slot="title" id="titles"><i class="iconfont iconbangzhushouce" style="font-size:14px;margin-right:4px;"></i><span slot="title">投放配置</span>
         </template>
         <el-menu-item index="/admin/advertiseConfig"><span class="space-item">广告配置</span></el-menu-item>
         <el-menu-item index="/admin/engineConfig"><span class="space-item">搜索引擎</span></el-menu-item>
         <el-menu-item index="/admin/siteConfig"><span class="space-item">合作站点</span></el-menu-item>
+      </el-submenu>
+      <el-submenu index="3">
+        <template slot="title" id="titles"><i class="iconfont iconbangzhushouce" style="font-size:14px;margin-right:4px;"></i><span slot="title">订单管理</span>
+        </template>
+        <el-menu-item index="/admin/order"><span class="space-item">订单列表</span></el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

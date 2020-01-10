@@ -71,8 +71,8 @@ export default {
   materialList: params => {
     return axios.post('/material/list', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
-  materialSave: params => {
-    return axios.post('/material/save', qs.stringify(params)).then(res => res.data).catch(err => err);
+  materialStatus: params => {
+    return axios.post('/material/status', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   engineList: params => {
     return axios.post('/engine/list', qs.stringify(params)).then(res => res.data).catch(err => err);
@@ -85,6 +85,13 @@ export default {
   },
   engineDelete: params => {
     return axios.post('/engine/delete', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  // 页面管理
+  pageList: params => {
+    return axios.post('/page/list', qs.stringify(params)).then(res => res.data).catch(err => err);
+  },
+  pageStatus: params => {
+    return axios.post('/page/status', qs.stringify(params)).then(res => res.data).catch(err => err);
   },
   // site
   siteGet: params => {

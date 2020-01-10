@@ -29,6 +29,14 @@ export default new Router({
           }
         },
         {
+          path: 'page',
+          name: 'pageManage',
+          component: resolve => require(['@/components/pageManage/page'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
           path: 'advertiseConfig',
           name: 'advertiseConfig',
           component: resolve => require(['@/components/yunmengConfig/advertiseConfig'], resolve),

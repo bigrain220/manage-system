@@ -68,7 +68,9 @@
            <el-table-column label="创建时间" width="180" align="center">
             <template slot-scope="scope">{{ scope.row.create_time|timeFilter }}</template>
           </el-table-column>
-          <el-table-column label="备注" prop="comment"  min-width="180" align="center">
+           <el-table-column min-width="50">
+          </el-table-column>
+          <el-table-column label="备注" prop="comment"  min-width="180">
           </el-table-column>
           <el-table-column label="状态" width="80" align="center">
             <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==1?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
@@ -185,7 +187,7 @@ export default {
     .tid,
     .status {
       .el-form-item__content {
-        width: 120px;
+        width: 140px;
       }
     }
   }

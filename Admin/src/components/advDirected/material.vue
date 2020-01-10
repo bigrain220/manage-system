@@ -220,7 +220,7 @@ export default {
       }
     },
     saveEvent(params) {
-      API.materialSave(params).then(rs => {
+      API.materialStatus(params).then(rs => {
         if (rs.code === 1) {
           this.$message.success("修改成功");
           this.search();

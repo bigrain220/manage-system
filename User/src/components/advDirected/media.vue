@@ -60,7 +60,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
     </div>
 
@@ -87,7 +87,7 @@
     <!-- list-dialog -->
     <directed-list-dialog v-if="dialogVisible.listMediadialogVisible" @listEvent="listEvent" :listDialogProps="listDialogProps"></directed-list-dialog>
     <!-- directed-dialog -->
-    <directed-dialog v-if="dialogVisible.directedMediadialogVisible" @mapEvent="mapEvent" :directedObj="directedObj"></directed-dialog>
+    <directed-dialog v-if="dialogVisible.directedMediadialogVisible" :directedObj="directedObj" @mapEvent="mapEvent"></directed-dialog>
   </div>
 </template>
 
@@ -360,11 +360,10 @@ export default {
     listEvent(data) {
       this.dialogVisible.listMediadialogVisible = data;
     },
-    //投放广告
+    //投放列表
     mapEvent(data) {
       this.dialogVisible.directedMediadialogVisible = data;
     },
-
     handleSizeChange(val) {
       this.size = val;
       this.search();
@@ -402,8 +401,8 @@ export default {
   overflow: hidden;
   .search-form {
     margin-top: 20px;
-    margin-bottom: 26px;
-    height: 40px;
+    // margin-bottom: 26px;
+    // height: 40px;
   }
   .mid-text,
   .day-text {

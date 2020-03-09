@@ -1,4 +1,4 @@
-import Vue from 'vue'
+// import Vue from 'vue'
 
 Vue.filter('getLocalTime', function (value) {
   // 如果以秒为单位

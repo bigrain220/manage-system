@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title='"投放列表( "+listDialogProps.title+" )"' :visible.sync="isShow" @closed="listMediadialogClose" class="directed-list-dialog" :close-on-click-modal="false">
+    <el-dialog :title='"投放列表( "+listDialogProps.title+" )"' :visible.sync="isShow" :fullscreen="isFullscreen" @closed="listMediadialogClose" class="directed-list-dialog" :close-on-click-modal="false">
       <el-tabs v-model="listSearchForm.status" @tab-click="handleClick">
         <el-tab-pane label="全部" name="all"></el-tab-pane>
         <el-tab-pane label="待付款" name="1"></el-tab-pane>
@@ -10,8 +10,8 @@
         <el-tab-pane label="退款中" name="5"></el-tab-pane>
         <el-tab-pane label="已退款" name="6"></el-tab-pane>
       </el-tabs>
-
-      <div class="table-box">
+      <span slot="title" class="el-icon-full-screen full-screen-btn" @click="fullscreenClick"></span>
+      <div class="table-box" v-loading="isLoading">
         <el-table ref="multipleTable" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" border stripe size="mini">
           <el-table-column type="selection" width="50" :selectable="checkSelectable">
           </el-table-column>
@@ -53,9 +53,9 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20,50,100]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="false"></el-pagination>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 20,50,100]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total"></el-pagination>
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="listMediaRefund" size="small">退款(投放中)</el-button>
+        <el-button type="danger" @click="listMediaRefund" size="small">退款 (投放中)</el-button>
       </div>
     </el-dialog>
     <!-- refundDialog -->
@@ -78,6 +78,8 @@ export default {
     return {
       activeName: "",
       isShow: true,
+      isLoading:false,
+      isFullscreen: false,
       listSearchForm: {
         status: "all"
       },
@@ -120,6 +122,7 @@ export default {
     },
     listMediadialogClose() {
       this.isShow = false;
+      this.isFullscreen = false;
     },
     listMediaRefund() {
       if (this.multipleSelection.length == 0) {
@@ -168,10 +171,12 @@ export default {
       return row.status == 3;
     },
     getDirectedListData(params) {
+      this.isLoading=true;
       API.spaceList(params).then(rs => {
-        console.log(rs);
+        // console.log(rs);
         this.total = rs.total;
         this.tableData = rs.rows;
+        this.isLoading=false;
       });
     },
     //获取退款理由
@@ -180,7 +185,10 @@ export default {
     },
     mapEvent(data) {
       this.dialogVisible.refundDialog = data;
-    }
+    },
+    fullscreenClick() {
+      this.isFullscreen = !this.isFullscreen;
+    },
   },
   mounted() {
     this.getDirectedListData({
@@ -226,15 +234,25 @@ export default {
 
 <style lang="scss">
 .directed-list-dialog .el-dialog {
-  width: 70%;
-  margin-top: 10vh !important;
+  // width: 70%;
+  // margin-top: 10vh !important;
+   min-width: 64%;
   .el-dialog__title {
     font-size: 14px;
     font-weight: bold;
   }
+  .el-dialog__header{
+    position: relative;
+  }
   .el-dialog__body {
     padding-top: 20px;
     padding-bottom: 0px;
+  }
+  .full-screen-btn {
+    position: absolute;
+    right: 50px;
+    bottom: -6px;
+    cursor: pointer;
   }
   .el-tabs__header {
     margin: 0 0 10px;
@@ -247,6 +265,11 @@ export default {
     position: relative;
     max-height: 44vh;
     overflow-y: auto;
+  }
+}
+.directed-list-dialog .el-dialog.is-fullscreen {
+  .table-box {
+    max-height: 64vh;
   }
 }
 </style>

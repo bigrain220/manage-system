@@ -42,8 +42,8 @@
               <a target="_blank" :href="scope.row.url" :title="scope.row.url">{{scope.row.url | urlFilter}}</a>
             </template>
           </el-table-column>
-          <el-table-column label="更新时间" width="180" align="center">
-            <template slot-scope="scope">{{ scope.row.modify_time|timeFilter }}</template>
+          <el-table-column label="创建时间" width="180" align="center">
+            <template slot-scope="scope">{{ scope.row.create_time|timeFilter }}</template>
           </el-table-column>
           <el-table-column label="状态" width="80" align="center">
             <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
@@ -56,7 +56,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="true"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
         <div class="group-btn">
           <el-checkbox v-model="checked" style="margin-right:14px;" @change="checkClick"></el-checkbox>
           <el-button type="primary" size="mini" @click="batchPass">批量通过</el-button>

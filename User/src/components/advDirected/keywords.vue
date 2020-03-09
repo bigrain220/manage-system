@@ -21,12 +21,13 @@
       </div>
     </div>
     <!-- dialog -->
-    <el-dialog title="批量导入(每行为一个关键词)" :visible.sync="dialogVisible.keyWordsDialog" width="40%"  @closed="keyWordsDialogClose" class="keyWords-dialog">
-      <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 10}" placeholder="每一行保存为一个关键词" v-model="keyWordsTextArea" size="mini" resize="none">
+    <el-dialog title="批量导入( 每行为一个关键词,请不要空行! )" :visible.sync="dialogVisible.keyWordsDialog" width="40%" :close-on-click-modal="false"  @closed="keyWordsDialogClose" class="keyWords-dialog">
+      <el-input type="textarea"  :autosize="{ minRows: 2, maxRows: 20}" placeholder="每一行保存为一个关键词" v-model="keyWordsTextArea" size="mini" resize="none">
       </el-input>
       <span slot="footer" class="dialog-footer">
+        <el-button  type="text" style="color:#333;float:left">最多 50 行, 当前：{{textAreaLength}} 行</el-button>
         <el-button  size="small" @click="dialogVisible.keyWordsDialog = false" >取 消</el-button>
-        <el-button  size="small" type="primary" @click="TextAreaSure">确 定</el-button>
+        <el-button  size="small" type="primary" @click="TextAreaSure" :disabled="isDisabled">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -46,6 +47,7 @@ export default {
         keyWordsDialog: false
       },
       keyWordsTextArea:"",
+      isDisabled:false,
       validobj:{
             validLength:true,
             validType:true,
@@ -198,7 +200,17 @@ export default {
   },
   mounted() {
     this.init();
-  }
+  },
+  computed: {
+    textAreaLength() {
+      if(this.keyWordsTextArea.split(/[(\r\n)\r\n]+/).length>50){
+          this.isDisabled=true;
+      }else{
+          this.isDisabled=false;
+      }
+      return this.keyWordsTextArea.split(/[(\r\n)\r\n]+/).length;
+    }
+  },
 };
 </script>
 <style lang="scss" scoped>

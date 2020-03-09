@@ -14,6 +14,10 @@
               <el-option label="退款" :value="2"></el-option>
             </el-select>
           </el-form-item>
+           <el-form-item>
+            <el-date-picker v-model="dateRange" unlink-panels type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="dateChange">
+            </el-date-picker>
+          </el-form-item>
           <el-form-item label="状态:" label-width="50px">
             <el-select v-model="searchForm.status" placeholder="请选择状态" style="width:120px;">
               <el-option label="全部" value=""></el-option>
@@ -72,6 +76,7 @@
 import Header from "../common/header";
 import API from "../../api/api";
 import "../../utils/filters";
+import  utils from "../../utils/utils";
 export default {
   name: "Order",
   components: { Header },
@@ -81,8 +86,11 @@ export default {
       searchForm: {
         order: "",
         tid: "",
+        start_time:"",
+        end_time:"",
         status: ""
       },
+      dateRange:"",
       tableData: [],
       total: 10,
       size: 10,
@@ -96,28 +104,38 @@ export default {
       }
       var params = {};
       this.searchForm.order ? (params.order_no = this.searchForm.order) : "";
+      this.dateRange.length ==2 ? (params.start_time = this.searchForm.start_time) : "";
+      this.dateRange.length ==2 ? (params.end_time = this.searchForm.end_time) : "";
       this.searchForm.status !== ""
         ? (params.status = this.searchForm.status)
         : "";
       this.searchForm.tid !== "" ? (params.tid = this.searchForm.tid) : "";
       params.page = this.currentPage;
       params.rows = this.size;
-      console.log(params);
+      // console.log(params);
       this.getOrderList(params);
     },
     resetSearch() {
       this.searchForm = {
         order: "",
         tid: "",
+        start_time:"",
+        end_time:"",
         status: ""
       };
+      this.dateRange="";
       this.currentPage = 1;
       this.size = 10;
       this.search();
     },
+    dateChange(params) {
+      // console.log(params, this.dateRange);
+      this.searchForm.start_time= utils.getLocalTime(this.dateRange[0].getTime()).slice(0,10);
+      this.searchForm.end_time= utils.getLocalTime(this.dateRange[1].getTime()).slice(0,10);
+    },
     getOrderList(params) {
       API.orderList(params).then(rs => {
-        console.log(rs);
+        // console.log(rs);
         this.total = rs.total;
         this.tableData = rs.rows;
       });
@@ -159,8 +177,9 @@ export default {
   min-height: 400px;
   .search-form {
     margin-top: 20px;
-    margin-bottom: 26px;
-    height: 40px;
+    // margin-bottom: 26px;
+    // height: 40px;
+     /deep/ .el-date-editor .el-range-separator{padding: 0;}
   }
   .status-fail {
     color: red;

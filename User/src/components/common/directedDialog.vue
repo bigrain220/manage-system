@@ -1,8 +1,14 @@
 <template>
   <el-dialog :title='"广告投放( "+directedObj.directedTitle+" )"' :visible.sync="isShow" @closed="directedMediadialogClose" class="directed-dialog" :fullscreen="isFullscreen" :close-on-click-modal="false" v-loading="isLoading" element-loading-text="正在投放中...">
     <el-form :inline="true" class="search-form" label-width="60px" size="mini" @submit.native.prevent>
-      <el-form-item label="关键词:">
-        <el-input placeholder="请输入内容" v-model="searchWord" clearable :maxlength="12" @keydown.enter.native="search(true)"></el-input>
+      <el-form-item label="">
+        <el-input placeholder="请输入内容" v-model="searchWord" @keydown.enter.native="search(true)">
+          <el-select v-model="selectValue" slot="prepend" placeholder="请选择">
+            <!-- <el-option label="全部" value=""></el-option> -->
+            <el-option label="标题" value="title"></el-option>
+            <el-option label="地址" value="url"></el-option>
+          </el-select>
+        </el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search(true)">查询</el-button>
@@ -11,8 +17,8 @@
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </el-form>
-    <span class="el-icon-full-screen full-screen-btn" @click="isFullscreen=!isFullscreen"></span>
-    <div class="table-box">
+    <span slot="title" class="el-icon-full-screen full-screen-btn" @click="fullscreenClick"></span>
+    <div class="table-box" v-loading="isLoading2">
       <el-table ref="multipleTable" :data="tableData" style="width: 100%;" @selection-change="handleSelectionChange" border stripe size="mini">
         <el-table-column type="selection" width="50">
         </el-table-column>
@@ -29,7 +35,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 50, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total" :hide-on-single-page="true"></el-pagination>
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 100, 200,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next" :total="total"></el-pagination>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" size="mini" style="float:left;cursor:default;color:#333;">合计: {{priceTotal}} 币</el-button>
       <el-button type="primary" @click="allDirected" size="mini">全部投放</el-button>
@@ -48,25 +54,29 @@ export default {
     return {
       isShow: true,
       isLoading: false,
-      isFullscreen:false,
+      isLoading2: false,
+      isFullscreen: false,
       searchWord: "",
+      selectValue: "title",
       tableData: [],
       selectTotal: null,
       priceTotal: 0,
       multipleSelection: [],
       total: 10,
-      size: 50,
+      size: 100,
       currentPage: 1
     };
   },
   methods: {
     getDirectedData(params) {
+      this.isLoading2 = true;
       API.spaceSearch(params).then(rs => {
         this.total = rs.total;
         this.tableData = rs.rows;
         this.tableData.map(item => {
           item.unitPriceSum = this.directedObj.directedDays * item.price;
         });
+        this.isLoading2 = false;
       });
     },
     search(isbtn) {
@@ -76,14 +86,15 @@ export default {
       var params = {};
       params.page = this.currentPage;
       params.rows = this.size;
-      this.searchWord ? (params.word = this.searchWord) : "";
+      this.searchWord ? (params[this.selectValue] = this.searchWord) : "";
+      // console.log(params)
       this.getDirectedData(params);
     },
     reset() {
       this.searchWord = "";
       this.currentPage = 1;
-      this.size = 50;
-      this.search();
+      this.size = 100;
+      this.getDirectedData({ page: this.currentPage, rows: this.size });
     },
     handleSizeChange(val) {
       this.size = val;
@@ -98,9 +109,11 @@ export default {
         mid: this.directedObj.directedID,
         pids: this.multipleSelection.join(",")
       };
+      this.isLoading = true;
       API.spacePutin(params).then(rs => {
+        this.isLoading = false;
         if (rs.msg === "ILLEGAL_COIN_NOT_ENOUGH") {
-          this.$confirm("投放失败，余额不足，是否前往充值?", "广告投放", {
+          this.$confirm("投放失败，余额不足，请前往充值?", "广告投放", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning"
@@ -108,12 +121,10 @@ export default {
             .then(() => {})
             .catch(() => {});
         } else if (rs.code === 1) {
-          this.isLoading = true;
           var timer = null;
           clearTimeout(timer);
           timer = setTimeout(() => {
             this.search();
-            this.isLoading = false;
             this.$alert("投放成功", "广告投放", {
               confirmButtonText: "确定",
               type: "success",
@@ -185,39 +196,53 @@ export default {
         this.selectedDirected();
       }, 500);
     },
+    fullscreenClick() {
+      this.isFullscreen = !this.isFullscreen;
+    },
     directedMediadialogClose() {
-      this.isShow = false;
+       this.isShow =false;
+      // this.$emit("update:isShow", false);
       this.isFullscreen = false;
     },
     handleSelectionChange(val) {
-      // console.log(val,'select')
+      // console.log(val, "select");
       this.multipleSelection = [];
       this.priceTotal = 0;
       this.selectTotal = val.length;
       val.map((item, index) => {
         this.multipleSelection.push(item.id);
+        // 通过原函数计算
+        // this.priceTotal=  this.accAdd(this.priceTotal,item.unitPriceSum);
+        // 通过构造函数计算
+        this.priceTotal = Number(this.priceTotal).getAdd(item.unitPriceSum);
       });
-      this.priceTotal = this.accMul(val[0].unitPriceSum, this.size);
       // console.log(this.multipleSelection);
     },
-    accMul(arg1, arg2) {
-      var m = 0,
-        s1 = arg1.toString(),
-        s2 = arg2.toString();
+    accAdd(arg1, arg2) {
+      var r1, r2, m;
       try {
-        m += s1.split(".")[1].length;
-      } catch (e) {}
+        r1 = arg1.toString().split(".")[1].length;
+      } catch (e) {
+        r1 = 0;
+      }
+
       try {
-        m += s2.split(".")[1].length;
-      } catch (e) {}
-      return (
-        (Number(s1.replace(".", "")) * Number(s2.replace(".", ""))) /
-        Math.pow(10, m)
-      );
+        r2 = arg2.toString().split(".")[1].length;
+      } catch (e) {
+        r2 = 0;
+      }
+      m = Math.pow(10, Math.max(r1, r2));
+      // return (arg1 * m + arg2 * m) / m;
+      return Math.round(((arg1 * m + arg2 * m) / m) * 100) / 100;
     }
   },
   mounted() {
-    this.search();
+    this.getDirectedData({ page: this.currentPage, rows: this.size });
+    //给运算添加prototype
+    var that = this;
+    Number.prototype.getAdd = function(val) {
+      return that.accAdd(this, val);
+    };
   },
   watch: {
     isShow(val) {
@@ -232,17 +257,23 @@ export default {
 .directed-dialog .el-dialog {
   // width: 60%;
   // margin-top: 10vh !important;
+  .search-form .el-select .el-input__inner {
+    width: 76px;
+  }
   .el-dialog__title {
     font-size: 14px;
     font-weight: bold;
   }
+  .el-dialog__header{
+    position: relative;
+  }
   .el-dialog__body {
     padding-top: 20px;
   }
-  .full-screen-btn{
+  .full-screen-btn {
     position: absolute;
     right: 50px;
-    top: 21px;
+    bottom: -6px;
     cursor: pointer;
   }
   .table-box {
@@ -254,6 +285,11 @@ export default {
       color: red;
       font-style: normal;
     }
+  }
+}
+.directed-dialog .el-dialog.is-fullscreen {
+  .table-box {
+    max-height: 64vh;
   }
 }
 </style>

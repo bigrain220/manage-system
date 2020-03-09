@@ -18,7 +18,7 @@
       <el-submenu index="11">
         <template slot="title" id="titles"><i class="iconfont iconbangzhushouce"></i><span slot="title">效果查看</span>
         </template>
-        <el-menu-item :index="'/user/'+locationParams.name +'/generalization'"><span class="space-item">网站概况</span></el-menu-item>
+        <el-menu-item :index="'/user/'+locationParams.name +'/generalization'"><span class="space-item">流量概况</span></el-menu-item>
         <el-menu-item :index="'/user/'+locationParams.name +'/flow'"><span class="space-item">流量分析</span></el-menu-item>
         <el-menu-item :index="'/user/'+locationParams.name +'/sources'"><span class="space-item">来源分析</span></el-menu-item>
         <el-menu-item :index="'/user/'+locationParams.name +'/visit'"><span class="space-item">访问分析</span></el-menu-item>

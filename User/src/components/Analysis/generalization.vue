@@ -32,7 +32,7 @@
                   <div>浏览量(PV)</div>
                 </th>
                 <th>
-                  <div>访客数(UV)</div>
+                  <div>点击量(CV)</div>
                 </th>
               </tr>
               <tr v-for="(item,index) in startData" :key="index">
@@ -90,7 +90,7 @@ export default {
   components: { Header, trendEcharts },
   data() {
     return {
-      title: "网站概况",
+      title: "流量概况",
       dateRange:"",
       loading: {
         wordTableLoading: false,

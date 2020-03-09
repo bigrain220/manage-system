@@ -11,6 +11,11 @@ function resolve (dir) {
 
 
 module.exports = {
+  //属性值是自定义的
+  externals:{
+    'vue':'Vue',
+    'element-ui':'ELEMENT'
+  },
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'

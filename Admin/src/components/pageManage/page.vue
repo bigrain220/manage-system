@@ -24,6 +24,7 @@
           <el-form-item label="网站:" class="sid">
             <el-select v-model="formInline.sid" placeholder="">
               <el-option label="全部" value=""></el-option>
+              <el-option label="其它" value="0"></el-option>
               <el-option v-for="item in siteIdData" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
@@ -48,16 +49,19 @@
           </el-table-column>
           <el-table-column label="用户ID" prop="uid" width="100" align="center">
           </el-table-column>
-          <el-table-column label="网站" width="100" align="center">
+          <el-table-column label="网站" width="160" align="center">
             <template slot-scope="scope">
               <span v-text="getFilters(scope.row.sid)"></span>
             </template>
           </el-table-column>
-          <el-table-column label="标题" prop="title">
+          <el-table-column label="标题">
+            <template slot-scope="scope">
+              <span v-html="scope.row.title"></span>
+            </template>
           </el-table-column>
           <el-table-column label="地址" prop="page">
             <template slot-scope="scope">
-              <a target="_blank" :href="'//'+scope.row.page" :title="scope.row.page">{{scope.row.page }}</a>
+              <a target="_blank" :href="'//'+emFilter(scope.row.page)" :title="emFilter(scope.row.page)" v-html="scope.row.page" ref="page"></a>
             </template>
           </el-table-column>
           <el-table-column label="状态" width="80" align="center">
@@ -71,7 +75,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="true"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10, 50, 100,500,1000]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
         <div class="group-btn">
           <el-checkbox v-model="checked" style="margin-right:14px;" @change="checkClick"></el-checkbox>
           <el-button type="primary" size="mini" @click="controlClick('wait','batch')">批量待投</el-button>
@@ -230,6 +234,9 @@ export default {
       if (data) {
         return data.name;
       }
+    },
+    emFilter: function(value) {
+      return value.replace(/<em>/g, "").replace(/<\/em>/g, "");
     }
   },
   mounted() {
@@ -284,6 +291,10 @@ export default {
 .page-box {
   .input-with-select .el-input-group__prepend .el-select {
     width: 100px;
+  }
+  .cell span em,
+  .cell a em {
+    color: red !important;
   }
   .from,
   .sid,

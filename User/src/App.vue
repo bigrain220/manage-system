@@ -39,6 +39,7 @@ export default {
     })
   },
   mounted(){
+    document.querySelector('#index_loading').style.display="none";
     window.addEventListener("scroll", this.scrollEvent);
   },
   destroyed() {

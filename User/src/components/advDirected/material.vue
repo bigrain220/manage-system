@@ -26,13 +26,15 @@
               <el-image :src=item.img_url class="img-list" :preview-src-list="srcList" v-for="(item,index) in scope.row.imgs" :key="index" @click="imgClick(scope.row.imgs,index)"></el-image>
             </template>
           </el-table-column>
-          <el-table-column label="推广网址"  align="center" width="320">
+          <el-table-column label="推广网址" align="center" width="320">
             <template slot-scope="scope">
               <a :href="scope.row.url" target="_blank">{{scope.row.url}}</a>
             </template>
           </el-table-column>
-          <el-table-column label="状态" width="120" align="center">
-            <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
+          <el-table-column label="状态" width="200" align="center">
+            <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==3?'status-fail':'']">{{ scope.row.status|statusFilter }}</span>
+              <span v-show="scope.row.status==3&&scope.row.comment" class="status-fail">({{scope.row.comment}})</span>
+            </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="180">
             <template slot-scope="scope">
@@ -121,7 +123,7 @@
       </div>
     </el-dialog>
     <!-- upload-dialog -->
-    <el-dialog title="上传图片" :visible.sync="dialogVisible.uploadDialogVisible" class="upload-dialog" destroy-on-close>
+    <el-dialog :title="'上传图片 ( 尺寸: '+uploadProps.width+'*'+uploadProps.height+' )'" :visible.sync="dialogVisible.uploadDialogVisible" class="upload-dialog" destroy-on-close>
       <img-upload :uploadProps=uploadProps @mapEvent="mapEvent"></img-upload>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" size="small" @click="uploadSureClick" style="width:100px;">上传</el-button>
@@ -203,7 +205,7 @@ export default {
     },
     getMaterialList(params) {
       API.materialList(params).then(rs => {
-        console.log(rs);
+        // console.log(rs);
         this.total = rs.total;
         this.tableData = rs.rows;
         this.tableData.map((item, index) => {
@@ -243,7 +245,7 @@ export default {
       this.editID = params.id;
       this.resetForm(this.materiaForm);
       this.materiaForm.name = params.name;
-      this.materiaForm.mobile =params.mobile;
+      this.materiaForm.mobile = params.mobile;
       this.materiaForm.url = params.url;
       this.materiaForm.qq = params.qq;
       var imgData = params.imgs;
@@ -256,9 +258,7 @@ export default {
 
       this.dialogVisible.materiaVisible = true;
     },
-    materiaDialogClose(){
-       
-    },
+    materiaDialogClose() {},
     resetForm(params) {
       for (const key in params) {
         if (params.hasOwnProperty(key)) {
@@ -283,13 +283,14 @@ export default {
             if (rs.code === 1) {
               this.$message.success("删除成功");
               let totalPage = Math.ceil((this.total - 1) / this.size);
-              let currentPage = this.currentPage > totalPage ? totalPage : this.currentPage;
+              let currentPage =
+                this.currentPage > totalPage ? totalPage : this.currentPage;
               this.currentPage = currentPage < 1 ? 1 : currentPage;
               this.search();
-            }else if(rs.msg==="ILLEGAL_MATERIAL_IS_USED"){
-               this.$message.error("删除失败: 物料使用中无法删除");
-            }else if(rs.msg ==="ILLEGAL_ACCESS_DENIED"){
-               this.$message.error("删除失败: 演示模式，拒绝操作");
+            } else if (rs.msg === "ILLEGAL_MATERIAL_IS_USED") {
+              this.$message.error("删除失败: 物料使用中无法删除");
+            } else if (rs.msg === "ILLEGAL_ACCESS_DENIED") {
+              this.$message.error("删除失败: 演示模式，拒绝操作");
             } else {
               this.$message.error("删除失败: " + rs.msg);
             }
@@ -299,30 +300,30 @@ export default {
     },
     materiaSubmit() {
       // console.log(this.materiaForm);
-      if(this.beforeSubmit(this.materiaForm) !=""){
-          this.$alert(""+this.beforeSubmit(this.materiaForm), "提交物料", {
-            confirmButtonText: "确定",
-            type:"warning",
-            callback: action => {
-             
-            }
-         }); 
-      }else{
-      //提交物料
-          if (this.submitType === "创建物料") {
-            API.materialAdd({ data: JSON.stringify(this.materiaForm)}).then(rs => {
+      if (this.beforeSubmit(this.materiaForm) != "") {
+        this.$alert("" + this.beforeSubmit(this.materiaForm), "提交物料", {
+          confirmButtonText: "确定",
+          type: "warning",
+          callback: action => {}
+        });
+      } else {
+        //提交物料
+        if (this.submitType === "创建物料") {
+          API.materialAdd({ data: JSON.stringify(this.materiaForm) }).then(
+            rs => {
               // console.log(rs, "add");
               this.submitResponse(rs, "add");
-            });
-          } else if (this.submitType === "编辑物料") {
-            var params = {};
-            params.data = JSON.stringify(this.materiaForm);
-            params.id = this.editID;
-            API.materialEdit(params).then(rs => {
-              // console.log(rs, "edit");
-              this.submitResponse(rs, "edit");
-            });
-          }
+            }
+          );
+        } else if (this.submitType === "编辑物料") {
+          var params = {};
+          params.data = JSON.stringify(this.materiaForm);
+          params.id = this.editID;
+          API.materialEdit(params).then(rs => {
+            // console.log(rs, "edit");
+            this.submitResponse(rs, "edit");
+          });
+        }
       }
     },
     submitResponse(params, submitType) {
@@ -334,7 +335,7 @@ export default {
             this.search();
           }
         });
-      }else if(params.msg ==="ILLEGAL_ACCESS_DENIED"){
+      } else if (params.msg === "ILLEGAL_ACCESS_DENIED") {
         this.$alert("提交失败: 演示模式，拒绝操作", "提交物料", {
           confirmButtonText: "确定",
           type: "error",
@@ -343,7 +344,7 @@ export default {
           }
         });
       } else {
-        this.$alert("提交失败: " +params.msg, "提交物料", {
+        this.$alert("提交失败: " + params.msg, "提交物料", {
           confirmButtonText: "确定",
           type: "error",
           callback: action => {
@@ -390,46 +391,57 @@ export default {
       );
     },
     //上传前验证
-    beforeSubmit(params){
-      var valArr=Object.values(params);
-      var keyArr=Object.keys(params);
-      var imgArr=[];
-      var msg=""
-      if(valArr.indexOf("")>=0){
-        msg =  "请将各项填完后提交"
-      }else{
-        keyArr.map((item,index)=>{
-          if(item.indexOf("img_")===0){
-            if(/^(http)/.test(params[item]) !==true || params[item].indexOf('.')<0){
-              msg = "图片路径不正确"
-            }else{
+    beforeSubmit(params) {
+      var valArr = Object.values(params);
+      var keyArr = Object.keys(params);
+      var imgArr = [];
+      var msg = "";
+      if (valArr.indexOf("") >= 0) {
+        msg = "请将各项填完后提交";
+      } else {
+        keyArr.map((item, index) => {
+          if (item.indexOf("img_") === 0) {
+            if (
+              /^(http)/.test(params[item]) !== true ||
+              params[item].indexOf(".") < 0
+            ) {
+              msg = "图片路径不正确";
+            } else {
               imgArr.push(params[item]);
             }
-          }else if(item === 'qq'){
-            /^[0-9]+$/.test(params[item])===false ?msg="qq格式不正确":"";
-          }else if(item === 'mobile'){
-            /^[0-9]+$/.test(params[item])===false ?msg="手机号格式不正确":"";
-          }else if(item === 'url'){
-            if(/^(http)/.test(params[item]) !==true || params[item].indexOf('.')<0){
-               msg = "推广地址格式不正确";
+          } else if (item === "qq") {
+            /^[0-9]+$/.test(params[item]) === false
+              ? (msg = "qq格式不正确")
+              : "";
+          } else if (item === "mobile") {
+            /^[0-9]+$/.test(params[item]) === false
+              ? (msg = "手机号格式不正确")
+              : "";
+          } else if (item === "url") {
+            if (
+              /^(http)/.test(params[item]) !== true ||
+              params[item].indexOf(".") < 0
+            ) {
+              msg = "推广地址格式不正确";
             }
           }
         });
-      imgArr.length !== [...new Set(imgArr)].length? msg="图片不能重复":"";
+        imgArr.length !== [...new Set(imgArr)].length
+          ? (msg = "图片不能重复")
+          : "";
       }
       return msg;
     }
   },
   mounted() {
     this.getMaterialList({ page: this.currentPage, rows: this.size });
-      window.addEventListener("mousemove", function() {
-        if (document.querySelector(".el-image-viewer__wrapper")) {
-        } else {
-          document.querySelector("body").style.overflow = "";
-          document.querySelector("body").style.marginRight = "0";
-        }
-      });
-  
+    window.addEventListener("mousemove", function() {
+      if (document.querySelector(".el-image-viewer__wrapper")) {
+      } else {
+        document.querySelector("body").style.overflow = "";
+        document.querySelector("body").style.marginRight = "0";
+      }
+    });
   },
   beforeDestory() {
     window.removeEventListener("mousemove");
@@ -465,8 +477,8 @@ export default {
   position: relative;
   .search-form {
     margin-top: 20px;
-    margin-bottom: 26px;
-    height: 40px;
+    // margin-bottom: 26px;
+    // height: 40px;
   }
   .add-btn {
     position: absolute;
@@ -513,7 +525,7 @@ export default {
 }
 .materiaDialog .el-dialog {
   width: 820px;
-  margin-top: 10vh!important;
+  margin-top: 10vh !important;
   .el-form-item {
     margin: 0 10px;
     margin-bottom: 10px;

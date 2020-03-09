@@ -45,7 +45,7 @@
           </el-table-column>
           <el-table-column label="名称" prop="name" width="180" align="center">
           </el-table-column>
-          <el-table-column label="地址" prop="url" width="180" align="center">
+          <el-table-column label="地址" prop="url" width="220" align="center">
             <template slot-scope="scope">
               <a target="_blank" :href="scope.row.url" :title="scope.row.url">{{scope.row.url}}</a>
             </template>
@@ -80,7 +80,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
     </div>
     <!-- editDialog -->
@@ -102,7 +102,7 @@
           <el-input v-model="editDialogData.remark"></el-input>
         </el-form-item>
         <el-form-item label="价格：" prop="price">
-          <el-input-number v-model="editDialogData.price" controls-position="right" :min="0" :max="100"></el-input-number>
+          <el-input-number v-model="editDialogData.price" controls-position="right" :min="0" :max="100" :step="0.01"></el-input-number>
         </el-form-item>
         <el-form-item label="排序：" prop="sort">
           <el-input-number v-model="editDialogData.sort" controls-position="right" :min="0" :max="100"></el-input-number>

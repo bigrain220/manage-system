@@ -20,6 +20,10 @@
               <el-option label="退款" value="2"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item>
+            <el-date-picker v-model="dateRange" unlink-panels type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="dateChange">
+            </el-date-picker>
+          </el-form-item>
           <el-form-item label="状态:" class="status">
             <el-select v-model="searchForm.status" placeholder="">
               <el-option label="全部" value=""></el-option>
@@ -40,23 +44,14 @@
           </el-table-column>
           <el-table-column label="订单号" prop="order_no" width="220" align="center">
           </el-table-column>
-           <el-table-column label="类型" align="center">
+          <el-table-column label="类型" align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.tid==1">投放</span>
               <span v-else-if="scope.row.tid==2">退款</span>
               <span v-else>{{scope.row.tid}}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="mid" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row.mid}}</span>
-            </template>
-          </el-table-column> -->
-          <!-- <el-table-column label="天数" prop="day" align="center">
-          </el-table-column> -->
-          <!-- <el-table-column label="num" prop="num" align="center">
-          </el-table-column> -->
-         <el-table-column label="币种" prop="cid">
+          <el-table-column label="币种" prop="cid">
             <template slot-scope="scope">
               <span v-if="scope.row.cid==19">推广币</span>
               <span v-else-if="scope.row.cid==22">云币</span>
@@ -65,18 +60,18 @@
           </el-table-column>
           <el-table-column label="总费用" prop="price" align="center">
           </el-table-column>
-           <el-table-column label="创建时间" width="180" align="center">
+          <el-table-column label="创建时间" width="180" align="center">
             <template slot-scope="scope">{{ scope.row.create_time|timeFilter }}</template>
           </el-table-column>
-           <el-table-column min-width="50">
+          <el-table-column min-width="50">
           </el-table-column>
-          <el-table-column label="备注" prop="comment"  min-width="180">
+          <el-table-column label="备注" prop="comment" min-width="180">
           </el-table-column>
           <el-table-column label="状态" width="80" align="center">
             <template slot-scope="scope"><span :class="[scope.row.status==2?'status-pass':scope.row.status==1?'status-fail':'']">{{ scope.row.status|statusFilter }}</span></template>
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[ 10,20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="true"></el-pagination>
       </div>
     </div>
   </div>
@@ -86,6 +81,7 @@
 import Header from "../common/header";
 import API from "../../api/api";
 import "../../utils/filters";
+import  utils from "../../utils/utils";
 export default {
   name: "order",
   components: { Header },
@@ -99,9 +95,12 @@ export default {
         name: "username",
         value: "",
         tid: "",
+        start_time:"",
+        end_time:"",
         status: ""
       },
-      tableData: []
+      tableData: [],
+      dateRange:""
     };
   },
   methods: {
@@ -114,17 +113,25 @@ export default {
         ? (params[this.searchForm.name] = this.searchForm.value)
         : "";
       this.searchForm.tid ? (params.tid = this.searchForm.tid) : "";
+      this.dateRange.length ==2 ? (params.start_time = this.searchForm.start_time) : "";
+      this.dateRange.length ==2 ? (params.end_time = this.searchForm.end_time) : "";
       this.searchForm.status ? (params.status = this.searchForm.status) : "";
       params.page = this.currentPage;
       params.rows = this.size;
-    //   console.log(params);
+      //   console.log(params);
       this.getOrderList(params);
     },
     resetSearch() {
-      this.searchForm = { name: "username", value: "", tid: "", status: "" };
+      this.searchForm = { name: "username", value: "", tid: "",start_time:"",end_time:"", status: "" };
+      this.dateRange="";
       this.currentPage = 1;
       this.size = 10;
       this.search();
+    },
+    dateChange(params) {
+      // console.log(params, this.dateRange);
+      this.searchForm.start_time= utils.getLocalTime(this.dateRange[0].getTime()).slice(0,10);
+      this.searchForm.end_time= utils.getLocalTime(this.dateRange[1].getTime()).slice(0,10);
     },
     handleSizeChange(val) {
       this.size = val;
@@ -184,6 +191,7 @@ export default {
     .input-with-select .el-input-group__prepend .el-select {
       width: 100px;
     }
+    .el-date-editor .el-range-separator{padding: 0;}
     .tid,
     .status {
       .el-form-item__content {

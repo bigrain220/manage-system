@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import utils from '../utils/utils.js'
 import router from '../router/index.js'
+import store from '../vuex/index'
 // import {
 //   MessageBox
 // } from 'element-ui'
@@ -31,6 +32,7 @@ axios.interceptors.response.use(
     // 对响应数据做点什么
     // console.log(response, 'response')
     // console.log(utils.getCookie('auth'), 'auth');
+    store.dispatch('contentLoadingEvent',false); //清除content-loading
     if (response.config.url == baseUrl + '/login' || response.config.url == baseUrl + '/logout') {
       isLogin = true;
       return response;

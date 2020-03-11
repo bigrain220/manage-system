@@ -19,8 +19,8 @@ Vue.config.productionTip = false
 // Vue.use(ElementUI);
 Vue.prototype.$center = new Vue() //非父子组件传值
 
-
 router.beforeEach((to, from, next) => {
+  store.dispatch('contentLoadingEvent',true);
   if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
     if (process.env.NODE_ENV === "production" ? utils.getCookie('auth') == "" : false) {
       // Message.success('抱歉，你还没有登录请重新登录');

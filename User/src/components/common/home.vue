@@ -1,8 +1,7 @@
 <template>
   <div id="main">
     <leftNav></leftNav>
-    <div class="content" id="content">
-      <div class="init-loading" v-if="initLoading">正在加载中...</div>
+    <div class="content" id="content"  v-loading="initLoading"  element-loading-text="加载中...">
       <!-- <transition name="el-fade-in" mode="out-in" appear> -->
         <router-view></router-view>
       <!-- </transition> -->
@@ -18,13 +17,25 @@ export default {
   components: {  leftNav,toTop:()=>import("./toTop")},
   data(){
     return{
-      initLoading:false
+
     }
   },
-  methods: {},
+  methods: {
+   
+  },
+  computed:{
+    initLoading:function(){
+      return this.$store.state.contentLoading
+    }
+  }
+
 
 };
 </script>
-<style  scoped>
-#content{margin-left: 180px;}
+
+<style lang="scss" scoped>
+#content{
+  margin-left: 180px;
+}
+/deep/#content>.el-loading-mask .el-loading-spinner{top: 20vh;}
 </style>

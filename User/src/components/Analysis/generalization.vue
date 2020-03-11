@@ -122,7 +122,7 @@ export default {
     getWordTableData() {
       this.loading.wordTableLoading = true;
       API.overviewWord({ date: this.dateCur }).then(rs => {
-        console.log(rs);
+        // console.log(rs);
         var arr = [];
         rs.items[0].map((item, index) => {
           var obj = {};

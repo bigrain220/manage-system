@@ -262,7 +262,7 @@ export default {
     },
     dealResponse(type, res) {
       var params = {
-        tile: "",
+        title: "",
         visibleName: ""
       };
       if (type === "edit") {
@@ -272,7 +272,7 @@ export default {
         params.title = "添加";
         params.visibleName = "addDialogVisible";
       }
-      if (res === 1) {
+      if (res.code === 1) {
         this.$message.success(params.title + "成功！");
         this.dialogVisible[params.visibleName] = false;
         this.search();
